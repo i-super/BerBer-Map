@@ -109,3 +109,15 @@ $berbermap-theme: mat.define-light-theme((
 
 html, body { height: 100%; }
 body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+
+.mat-icon-button.mat-icon-button,
+.mat-fab.mat-fab,
+.mat-mini-fab.mat-mini-fab {
+  &,
+  .mat-button-wrapper.mat-button-wrapper {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+  }
+}

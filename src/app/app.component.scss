@@ -1,4 +1,24 @@
 .main {
   height: 100%;
   width: 100%;
+
+  .addNewButton {
+    position: fixed;
+    top: 30px;
+    right: 40px;
+    z-index: 1;
+    button {
+      transition: all 0.3s;
+      &:hover {
+        background: #2E4C6D;
+      }
+    }
+    mat-icon {
+      $size: 36px;
+      font-size: $size;
+      width: $size;
+      height: $size;
+      color: white;
+    }
+  }
 }
