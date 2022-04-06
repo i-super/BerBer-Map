@@ -1,0 +1,47 @@
+.dialogWrapper {
+  min-width: 800px;
+  padding: 84px 74px;
+  background: #f5f5f5;
+}
+
+.row {
+  display: flex;
+  align-items: center;
+  margin: 30px 0;
+  padding: 2px 0 2px 8px;
+  font-size: 16px;
+  color: #2e4c6d;
+  &.categoryRow,
+  &.imageRow {
+    margin-top: -25px;
+  }
+  .title {
+    min-width: 120px;
+    font-size: 18px;
+  }
+  ::ng-deep {
+    .mat-radio-label-content {
+      display: flex;
+      align-items: center;
+      padding-right: 40px;
+    }
+  }
+  .favoriteIcon {
+    color: #ff616f;
+    padding-left: 5px;
+  }
+  .checkIcon {
+    color: #4caf50;
+    padding-left: 5px;
+  }
+  .thumbDownIcon {
+    color: #0091ea;
+    padding-left: 5px;
+  }
+  .spotContainer {
+    width: 300px;
+  }
+  .noteContainer {
+    width: 500px;
+  }
+}

@@ -1,0 +1,55 @@
+<div class="dialogWrapper">
+  <!-- Spot -->
+  <div class="row">
+    <mat-form-field class="spotContainer" appearance="outline">
+      <mat-label>Spot</mat-label>
+      <input matInput placeholder="Ex. Yosemite">
+    </mat-form-field>
+  </div>
+
+  <!-- Category -->
+  <div class="row categoryRow">
+    <div class="title category">Category</div>
+    <mat-radio-group aria-label="Select an option">
+      <mat-radio-button value="1">Hike</mat-radio-button>
+      <mat-radio-button value="2">Food</mat-radio-button>
+    </mat-radio-group>
+  </div>
+
+  <!-- Icon -->
+  <div class="row">
+    <div class="title selectIcon">Mark</div>
+    <mat-radio-group aria-label="Select an option">
+      <mat-radio-button value="1">Awesome <mat-icon class="favoriteIcon">favorite</mat-icon>
+      </mat-radio-button>
+      <mat-radio-button value="2">Good <mat-icon class="checkIcon">check_circle</mat-icon>
+      </mat-radio-button>
+      <mat-radio-button value="3">Naah <mat-icon class="thumbDownIcon">thumb_down</mat-icon>
+      </mat-radio-button>
+    </mat-radio-group>
+  </div>
+
+  <!-- Tags -->
+  <div class="row">
+    <div class="title tags">Tags</div>
+  </div>
+
+  <!-- notes -->
+  <div class="row noteRow">
+    <mat-form-field class="noteContainer" appearance="outline">
+      <mat-label>Notes</mat-label>
+      <textarea matInput></textarea>
+    </mat-form-field>
+  </div>
+
+  <!-- Upload images -->
+  <div class="row imageRow">
+    <div class="title images">Images</div>
+  </div>
+
+  <!-- Save and cancel button -->
+  <div class="row buttonRow" mat-dialog-actions>
+    <button class="cancelButton" mat-button mat-dialog-close>Cancel</button>
+    <button class="saveButton" mat-button [mat-dialog-close]="true">Save</button>
+  </div>
+</div>
