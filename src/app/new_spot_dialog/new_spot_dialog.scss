@@ -1,7 +1,14 @@
-.dialogWrapper {
-  min-width: 700px;
-  padding: 84px;
+.dialog-wrapper {
   background: #f5f5f5;
+  padding: 32px;
+
+  @media screen and (min-width: 600px) {
+    padding: 60px;
+  }
+
+  @media screen and (min-width: 900px) {
+    padding: 84px;
+  }
 }
 
 .row {
@@ -11,53 +18,79 @@
   padding: 2px 0 2px 8px;
   font-size: 16px;
   color: #2e4c6d;
-  &.categoryRow,
-  &.imageRow {
-    margin-top: -25px;
+}
+
+.category-row,
+.image-row {
+  margin-top: -25px;
+}
+
+.title {
+  min-width: 120px;
+  font-size: 18px;
+}
+
+.spot-container {
+  width: 400px;
+  max-width: 100%;
+
+  ::ng-deep {
+    .mat-form-field-infix {
+      padding: 0;
+
+      input {
+        padding: 1em 10px;
+        margin-left: -10px;
+        margin-right: -10px;
+      }
+    }
   }
-  .title {
-    min-width: 120px;
-    font-size: 18px;
-  }
+}
+
+.mat-radio-button {
+  margin-right: 40px;
+
   ::ng-deep {
     .mat-radio-label-content {
       display: flex;
       align-items: center;
     }
   }
-  .mat-radio-button {
-    margin-right: 40px;
-  }
-  .mark-icon {
-    padding-left: 5px;
-  }
-  .spotContainer {
-    width: 300px;
-  }
-  .noteContainer {
-    width: 500px;
-  }
-  &.buttonRow {
-    justify-content: center;
-    margin: 60px 0 3px 0;
-    .cancelButton {
-      width: 80px;
-      font-size: 16px;
-      color: #2e4c6d;
-      background: #f5f5f5;
-      box-shadow: 0px 3px 1px -2px rgb(0 0 0 / 6%),
-        0px 2px 2px 0px rgb(0 0 0 / 14%), 0px 1px 5px 0px rgb(0 0 0 / 12%);
-      &:hover {
-        background: #e0e0e0;
-      }
+}
+
+.mark-icon {
+  padding-left: 5px;
+}
+
+.note-container {
+  width: 500px;
+  max-width: 100%;
+}
+
+.button-row {
+  justify-content: center;
+  margin: 60px 0 3px 0;
+
+  .cancel-button {
+    width: 80px;
+    font-size: 16px;
+    color: #2e4c6d;
+    background: #f5f5f5;
+    box-shadow: 0px 3px 1px -2px rgb(0 0 0 / 6%),
+      0px 2px 2px 0px rgb(0 0 0 / 14%), 0px 1px 5px 0px rgb(0 0 0 / 12%);
+
+    &:hover {
+      background: #e0e0e0;
     }
-    .saveButton {
-      margin-left: 10px;
-      width: 80px;
-      font-size: 16px;
-      &:hover {
-        background: #2e4c6d;
-      }
+  }
+
+  .save-button {
+    margin-left: 10px;
+    width: 80px;
+    font-size: 16px;
+
+    &:hover {
+      background: #2e4c6d;
     }
   }
 }
