@@ -3,28 +3,26 @@
   <div class="row">
     <mat-form-field class="spotContainer" appearance="outline">
       <mat-label>Spot</mat-label>
-      <input matInput placeholder="Ex. Yosemite">
+      <input matInput [(ngModel)]="spotLocation" placeholder="Ex. Yosemite">
     </mat-form-field>
   </div>
 
   <!-- Category -->
   <div class="row categoryRow">
     <div class="title category">Category</div>
-    <mat-radio-group aria-label="Select an option">
-      <mat-radio-button value="1">Hike</mat-radio-button>
-      <mat-radio-button value="2">Food</mat-radio-button>
+    <mat-radio-group aria-label="Select an option" [(ngModel)]="selectedCategory">
+      <mat-radio-button class="example-radio-button" *ngFor="let category of categories" [value]="category">
+        {{category}}
+      </mat-radio-button>
     </mat-radio-group>
   </div>
 
   <!-- Icon -->
   <div class="row">
     <div class="title selectIcon">Mark</div>
-    <mat-radio-group aria-label="Select an option">
-      <mat-radio-button value="1">Awesome <mat-icon class="favoriteIcon">favorite</mat-icon>
-      </mat-radio-button>
-      <mat-radio-button value="2">Good <mat-icon class="checkIcon">check_circle</mat-icon>
-      </mat-radio-button>
-      <mat-radio-button value="3">Naah <mat-icon class="thumbDownIcon">thumb_down</mat-icon>
+    <mat-radio-group aria-label="Select an option" [(ngModel)]="selectedIcon">
+      <mat-radio-button class="mark-radio-button" *ngFor="let icon of icons" [value]="icon">
+        {{icon.label}} <mat-icon class="mark-icon" [style.color]="icon.color"> {{icon.icon}} </mat-icon>
       </mat-radio-button>
     </mat-radio-group>
   </div>
@@ -34,11 +32,11 @@
     <div class="title tags">Tags</div>
   </div>
 
-  <!-- notes -->
+  <!-- Notes -->
   <div class="row noteRow">
     <mat-form-field class="noteContainer" appearance="outline">
       <mat-label>Notes</mat-label>
-      <textarea matInput></textarea>
+      <textarea matInput [(ngModel)]="notes"></textarea>
     </mat-form-field>
   </div>
 
@@ -49,7 +47,7 @@
 
   <!-- Save and cancel button -->
   <div class="row buttonRow" mat-dialog-actions>
-    <button class="cancelButton" mat-button mat-dialog-close>Cancel</button>
-    <button class="saveButton" mat-button [mat-dialog-close]="true">Save</button>
+    <button class="cancelButton" mat-raised-button mat-dialog-close>Cancel</button>
+    <button class="saveButton" mat-raised-button color="accent" (click)="onSave()">Save</button>
   </div>
 </div>
