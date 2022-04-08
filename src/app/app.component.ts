@@ -6,7 +6,7 @@ import { NewSpotDialogComponent } from './new_spot_dialog/new_spot_dialog';
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
-  styleUrls: ['./app.component.scss']
+  styleUrls: ['./app.component.scss'],
 })
 export class AppComponent {
   @ViewChild(GoogleMap) map!: GoogleMap;
@@ -15,6 +15,9 @@ export class AppComponent {
   title = 'berbermap';
 
   openAddNewSpotDialog(): void {
-    this.dialog.open(NewSpotDialogComponent);
+    this.dialog.open(NewSpotDialogComponent, {
+      maxHeight: '100vh',
+      maxWidth: '100vw',
+    });
   }
 }

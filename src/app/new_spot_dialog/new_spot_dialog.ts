@@ -5,7 +5,10 @@ import {
   OnDestroy,
   ViewChild,
 } from '@angular/core';
+import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 import { MatDialogRef } from '@angular/material/dialog';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { resizeImg } from '../image_processing';
 
 interface Mark {
   label: string;
@@ -34,9 +37,13 @@ export class NewSpotDialogComponent implements AfterViewInit, OnDestroy {
   ];
   tags: string[] = [];
   notes = '';
-  // images: [];
+  uploadImages: { previewURL: SafeUrl; file: File }[] = [];
 
-  constructor(public dialogRef: MatDialogRef<NewSpotDialogComponent>) {}
+  constructor(
+    readonly dialogRef: MatDialogRef<NewSpotDialogComponent>,
+    private readonly MatSnackBar: MatSnackBar,
+    private readonly domSanitizer: DomSanitizer
+  ) {}
 
   ngAfterViewInit() {
     this.placesAutocomplete = new google.maps.places.Autocomplete(
@@ -58,6 +65,26 @@ export class NewSpotDialogComponent implements AfterViewInit, OnDestroy {
 
   ngOnDestroy() {
     google.maps.event.clearInstanceListeners(this.placesAutocomplete);
+  }
+
+  onSelectImg(e: Event) {
+    const files = (e.target as HTMLInputElement).files;
+    if (!files) return;
+    for (let i = 0; i < files.length; ++i) {
+      resizeImg(files[i], 'image.png', 800, 800)
+        .then(({ file }) => {
+          this.uploadImages.push({
+            file,
+            previewURL: this.domSanitizer.bypassSecurityTrustUrl(
+              URL.createObjectURL(file)
+            ),
+          });
+        })
+        .catch((error) => {
+          // TODO: color too dark
+          this.MatSnackBar.open(error.message, 'Dismiss');
+        });
+    }
   }
 
   onSave(): void {

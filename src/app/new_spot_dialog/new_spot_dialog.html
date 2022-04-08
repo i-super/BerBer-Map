@@ -1,14 +1,14 @@
 <div class="dialog-wrapper">
   <!-- Spot -->
   <div class="row">
-    <mat-form-field class="spot-container" appearance="outline">
+    <mat-form-field class="spot-container no-padding" appearance="outline">
       <mat-label>Spot</mat-label>
       <input #spotInput matInput placeholder="Ex. Yosemite" />
     </mat-form-field>
   </div>
 
   <!-- Category -->
-  <div class="row category-row">
+  <div class="row">
     <div class="title category">Category</div>
     <mat-radio-group
       aria-label="Select an option"
@@ -47,16 +47,29 @@
   </div>
 
   <!-- Notes -->
-  <div class="row note-row">
-    <mat-form-field class="note-container" appearance="outline">
+  <div class="row">
+    <mat-form-field class="note-container no-padding" appearance="outline">
       <mat-label>Notes</mat-label>
       <textarea matInput [(ngModel)]="notes"></textarea>
     </mat-form-field>
   </div>
 
   <!-- Upload images -->
+  <div class="row title">Images</div>
   <div class="row image-row">
-    <div class="title images">Images</div>
+    <div *ngFor="let image of uploadImages" class="image-wrapper">
+      <img [src]="image.previewURL" />
+    </div>
+    <div class="upload-img">
+      <input
+        type="file"
+        accept="image/*"
+        multiple
+        (change)="onSelectImg($event)"
+      />
+      <mat-icon class="upload-icon">collections</mat-icon>
+      <span>Add Photo</span>
+    </div>
   </div>
 
   <!-- Save and cancel button -->
