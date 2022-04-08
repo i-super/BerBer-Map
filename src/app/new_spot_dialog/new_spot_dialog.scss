@@ -78,15 +78,42 @@ mat-form-field {
 }
 
 .image-wrapper {
+  position: relative;
   width: 280px;
   height: 210px;
-  border: 1px solid #396fb0;
-  background: #e6f3fb;
   margin: 0 20px 20px 0;
+  border: 1px solid #396fb0;
+  border-radius: 8px;
+  background: #e6f3fb;
   img {
     width: 100%;
     height: 100%;
     object-fit: scale-down;
+  }
+  button {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    width: 20px;
+    height: 20px;
+    background: #f5693f;
+    opacity: 0;
+    transition: opacity 0.3s;
+    mat-icon {
+      width: 14px;
+      height: 14px;
+      font-size: 14px;
+      line-height: 14px;
+      color: white;
+    }
+  }
+  &:hover {
+    img {
+      opacity: 0.8;
+    }
+    button {
+      opacity: 1;
+    }
   }
 }
 
@@ -106,7 +133,7 @@ mat-form-field {
   border-radius: 8px;
   color: #396fb0;
   border: 2px dashed currentColor;
-  transition: all 0.3s;
+  transition: opacity 0.3s;
   &:hover {
     opacity: 0.8;
   }

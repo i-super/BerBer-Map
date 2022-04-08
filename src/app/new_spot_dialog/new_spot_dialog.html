@@ -57,9 +57,21 @@
   <!-- Upload images -->
   <div class="row title">Images</div>
   <div class="row image-row">
-    <div *ngFor="let image of uploadImages" class="image-wrapper">
+    <div
+      *ngFor="let image of uploadImages; let i = index"
+      class="image-wrapper"
+    >
       <img [src]="image.previewURL" />
+      <button
+        mat-icon-button
+        matTooltip="Remove image"
+        matTooltipPosition="above"
+        (click)="uploadImages.splice(i, 1)"
+      >
+        <mat-icon>remove</mat-icon>
+      </button>
     </div>
+
     <div class="upload-img">
       <input
         type="file"

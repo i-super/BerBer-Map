@@ -98,7 +98,9 @@ export class NewSpotDialogComponent implements AfterViewInit, OnDestroy {
       ', tags:',
       this.tags,
       ', notes:',
-      this.notes
+      this.notes,
+      ' uploadImages:',
+      this.uploadImages
     );
   }
 }
