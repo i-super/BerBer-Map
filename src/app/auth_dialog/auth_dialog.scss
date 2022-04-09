@@ -1,0 +1,31 @@
+.sign-in-with-google {
+  display: block;
+  margin: 8px;
+}
+
+.buttons {
+  display: flex;
+  align-items: center;
+
+  & > *:not(:first-child) {
+    margin-left: 8px;
+  }
+}
+
+.submit-button {
+  display: inline-flex;
+  align-items: center;
+  height: 36px;
+
+  ::ng-deep {
+    .mat-button-wrapper {
+      display: flex;
+      align-items: center;
+      line-height: 1;
+    }
+  }
+
+  mat-spinner {
+    margin-right: 4px;
+  }
+}

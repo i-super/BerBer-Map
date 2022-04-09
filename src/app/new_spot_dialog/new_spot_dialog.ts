@@ -10,6 +10,7 @@ import { MatDialogRef } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { resizeImg } from '../image_processing';
 import { MatAutocompleteTrigger } from '@angular/material/autocomplete';
+import { FirebaseService } from '../services/firebase_service';
 
 interface Mark {
   label: string;
@@ -29,10 +30,11 @@ export class NewSpotDialogComponent implements AfterViewInit, OnDestroy {
 
   placesAutocomplete!: google.maps.places.Autocomplete;
   spotLocation?: google.maps.places.PlaceResult;
+  name = '';
 
-  selectedCategory = '';
+  selectedCategory?: string;
   categories = ['Hike', 'Food'];
-  selectedIcon: Mark = { label: '', icon: '', color: '' };
+  selectedIcon?: Mark;
   icons = [
     { label: 'Awesome', icon: 'favorite', color: '#ff616f' },
     { label: 'Good', icon: 'check_circle', color: '#4caf50' },
@@ -53,10 +55,13 @@ export class NewSpotDialogComponent implements AfterViewInit, OnDestroy {
   notes = '';
   uploadImages: { previewURL: SafeUrl; file: File }[] = [];
 
+  loading = false;
+
   constructor(
-    readonly dialogRef: MatDialogRef<NewSpotDialogComponent>,
-    private readonly MatSnackBar: MatSnackBar,
-    private readonly domSanitizer: DomSanitizer
+    private readonly domSanitizer: DomSanitizer,
+    private readonly firebaseService: FirebaseService,
+    private readonly matDialogRef: MatDialogRef<NewSpotDialogComponent>,
+    private readonly matSnackBar: MatSnackBar
   ) {
     this.filterTags();
   }
@@ -73,6 +78,7 @@ export class NewSpotDialogComponent implements AfterViewInit, OnDestroy {
       console.log(place);
       if (place.geometry) {
         this.spotLocation = place;
+        this.name = place.name ?? '';
       } else {
         this.spotLocation = undefined;
       }
@@ -139,12 +145,23 @@ export class NewSpotDialogComponent implements AfterViewInit, OnDestroy {
         })
         .catch((error) => {
           // TODO: color too dark
-          this.MatSnackBar.open(error.message, 'Dismiss');
+          this.matSnackBar.open(error.message, 'Dismiss');
         });
     }
   }
 
   onSave(): void {
+    if (
+      this.loading ||
+      !this.spotLocation?.geometry?.location ||
+      !this.spotLocation?.place_id ||
+      !this.selectedCategory ||
+      !this.selectedIcon ||
+      !this.name
+    ) {
+      return;
+    }
+
     console.log(
       'spotLocation:',
       this.spotLocation,
@@ -159,5 +176,29 @@ export class NewSpotDialogComponent implements AfterViewInit, OnDestroy {
       ' uploadImages:',
       this.uploadImages
     );
+
+    this.loading = true;
+
+    this.firebaseService
+      .createSpot({
+        placeId: this.spotLocation.place_id,
+        name: this.name,
+        lat: this.spotLocation.geometry.location.lat(),
+        lng: this.spotLocation.geometry.location.lng(),
+        category: this.selectedCategory,
+        icon: this.selectedIcon.icon,
+        tags: [...this.tags],
+        notes: this.notes,
+        images: this.uploadImages.map((image) => image.file),
+      })
+      .then(() => {
+        this.matDialogRef.close();
+      })
+      .catch((error) => {
+        console.error(error);
+      })
+      .finally(() => {
+        this.loading = false;
+      });
   }
 }

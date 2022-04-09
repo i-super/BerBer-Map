@@ -1,0 +1,57 @@
+<mat-tab-group [(selectedIndex)]="selectedTabIndex">
+  <mat-tab label="Login">
+    <mat-form-field appearance="outline">
+      <mat-label>email</mat-label>
+      <input matInput type="email" required [(ngModel)]="email" />
+    </mat-form-field>
+    <mat-form-field appearance="outline">
+      <mat-label>password</mat-label>
+      <input
+        matInput
+        type="password"
+        autocomplete="current-password"
+        required
+        [(ngModel)]="password"
+      />
+    </mat-form-field>
+  </mat-tab>
+  <mat-tab label="Sign Up">
+    <mat-form-field appearance="outline">
+      <mat-label>email</mat-label>
+      <input matInput type="email" required [(ngModel)]="email" />
+    </mat-form-field>
+    <mat-form-field appearance="outline">
+      <mat-label>password</mat-label>
+      <input
+        matInput
+        type="password"
+        autocomplete="new-password"
+        required
+        [(ngModel)]="password"
+      />
+    </mat-form-field>
+  </mat-tab>
+</mat-tab-group>
+
+<button
+  mat-flat-button
+  color="accent"
+  class="sign-in-with-google"
+  (click)="signInWithGoogle()"
+>
+  Sign in with Google
+</button>
+
+<div class="buttons">
+  <button mat-stroked-button mat-dialog-close>Cancel</button>
+  <button
+    mat-raised-button
+    color="accent"
+    class="submit-button"
+    [disabled]="loading"
+    (click)="onSubmit()"
+  >
+    <mat-spinner *ngIf="loading" color="accent" [diameter]="16"></mat-spinner>
+    {{selectedTabIndex === 0 ? 'Login' : 'Signup' }}
+  </button>
+</div>

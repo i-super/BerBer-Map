@@ -1,7 +1,10 @@
 import { Component, ViewChild } from '@angular/core';
 import { GoogleMap } from '@angular/google-maps';
 import { MatDialog } from '@angular/material/dialog';
+import { AuthDialog } from './auth_dialog/auth_dialog';
+import { auth } from './firebase';
 import { NewSpotDialogComponent } from './new_spot_dialog/new_spot_dialog';
+import { FirebaseService } from './services/firebase_service';
 
 @Component({
   selector: 'app-root',
@@ -11,11 +14,22 @@ import { NewSpotDialogComponent } from './new_spot_dialog/new_spot_dialog';
 export class AppComponent {
   @ViewChild(GoogleMap) map!: GoogleMap;
 
-  constructor(public dialog: MatDialog) {}
-  title = 'berbermap';
+  readonly auth = auth;
+
+  constructor(
+    readonly firebaseService: FirebaseService,
+    private readonly matDialog: MatDialog
+  ) {}
+
+  openAuthDialog() {
+    this.matDialog.open(AuthDialog, {
+      maxHeight: '100vh',
+      maxWidth: '100vw',
+    });
+  }
 
   openAddNewSpotDialog(): void {
-    this.dialog.open(NewSpotDialogComponent, {
+    this.matDialog.open(NewSpotDialogComponent, {
       maxHeight: '100vh',
       maxWidth: '100vw',
     });
