@@ -9,16 +9,12 @@
 
   <!-- Category -->
   <div class="row">
-    <div class="title category">Category</div>
+    <div class="title">Category</div>
     <mat-radio-group
       aria-label="Select an option"
       [(ngModel)]="selectedCategory"
     >
-      <mat-radio-button
-        class="example-radio-button"
-        *ngFor="let category of categories"
-        [value]="category"
-      >
+      <mat-radio-button *ngFor="let category of categories" [value]="category">
         {{category}}
       </mat-radio-button>
     </mat-radio-group>
@@ -26,13 +22,9 @@
 
   <!-- Icon -->
   <div class="row">
-    <div class="title select-icon">Mark</div>
+    <div class="title">Mark</div>
     <mat-radio-group aria-label="Select an option" [(ngModel)]="selectedIcon">
-      <mat-radio-button
-        class="mark-radio-button"
-        *ngFor="let icon of icons"
-        [value]="icon"
-      >
+      <mat-radio-button *ngFor="let icon of icons" [value]="icon">
         {{icon.label}}
         <mat-icon class="mark-icon" [style.color]="icon.color">
           {{icon.icon}}
@@ -43,7 +35,41 @@
 
   <!-- Tags -->
   <div class="row">
-    <div class="title tags">Tags</div>
+    <div class="title">Tags</div>
+
+    <div *ngFor="let tag of tags" class="tag-wrapper">
+      <span> {{tag}} </span>
+      <button
+        mat-icon-button
+        matTooltipPosition="above"
+        (click)="tags.delete(tag)"
+      >
+        <mat-icon>clear</mat-icon>
+      </button>
+    </div>
+
+    <mat-form-field class="no-padding" appearance="outline">
+      <mat-label>Features</mat-label>
+      <input
+        #tagInput
+        type="text"
+        [(ngModel)]="tagValue"
+        (ngModelChange)="filterTags()"
+        placeholder="Ex: Difficulty, Amenities..."
+        matInput
+        [matAutocomplete]="auto"
+      />
+      <mat-autocomplete
+        #auto="matAutocomplete"
+        autoActiveFirstOption
+        (optionSelected)="addTag($event.option.value)"
+        (opened)="filterTags()"
+      >
+        <mat-option *ngFor="let option of filteredTagOptions" [value]="option">
+          {{option}}
+        </mat-option>
+      </mat-autocomplete>
+    </mat-form-field>
   </div>
 
   <!-- Notes -->

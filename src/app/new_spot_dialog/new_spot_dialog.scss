@@ -68,6 +68,40 @@ mat-form-field {
   padding-left: 5px;
 }
 
+.tag-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  margin-right: 8px;
+  padding: 0 34px 0 14px;
+  height: 30px;
+  background: #e6f2f6;
+  border: 1px solid #9fc9dc;
+  border-radius: 15px;
+  span {
+    line-height: 30px;
+  }
+  button {
+    position: absolute;
+    top: 50%;
+    right: 6px;
+    transform: translateY(-50%);
+    width: 20px;
+    height: 20px;
+    transition: all 0.3s;
+    &:hover {
+      background: #9fc9dc;
+    }
+  }
+  mat-icon {
+    width: 16px;
+    height: 16px;
+    font-size: 16px;
+    line-height: 16px;
+    color: #2e4c6d;
+  }
+}
+
 .note-container {
   width: 500px;
   max-width: 100%;

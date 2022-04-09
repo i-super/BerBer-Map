@@ -9,6 +9,7 @@ import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 import { MatDialogRef } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { resizeImg } from '../image_processing';
+import { MatAutocompleteTrigger } from '@angular/material/autocomplete';
 
 interface Mark {
   label: string;
@@ -23,6 +24,8 @@ interface Mark {
 })
 export class NewSpotDialogComponent implements AfterViewInit, OnDestroy {
   @ViewChild('spotInput') spotInput!: ElementRef;
+  @ViewChild('tagInput', { read: MatAutocompleteTrigger })
+  tagInput!: MatAutocompleteTrigger;
 
   placesAutocomplete!: google.maps.places.Autocomplete;
   spotLocation?: google.maps.places.PlaceResult;
@@ -35,7 +38,18 @@ export class NewSpotDialogComponent implements AfterViewInit, OnDestroy {
     { label: 'Good', icon: 'check_circle', color: '#4caf50' },
     { label: 'Naah', icon: 'thumb_down', color: '#0091ea' },
   ];
-  tags: string[] = [];
+  tags: Set<string> = new Set<string>();
+  tagValue = '';
+  tagOptions = [
+    'shade',
+    'easy',
+    'moderate',
+    'difficult',
+    'landscape',
+    'toilet',
+    'picnic',
+  ];
+  filteredTagOptions: string[] = [];
   notes = '';
   uploadImages: { previewURL: SafeUrl; file: File }[] = [];
 
@@ -43,7 +57,9 @@ export class NewSpotDialogComponent implements AfterViewInit, OnDestroy {
     readonly dialogRef: MatDialogRef<NewSpotDialogComponent>,
     private readonly MatSnackBar: MatSnackBar,
     private readonly domSanitizer: DomSanitizer
-  ) {}
+  ) {
+    this.filterTags();
+  }
 
   ngAfterViewInit() {
     this.placesAutocomplete = new google.maps.places.Autocomplete(
@@ -65,6 +81,47 @@ export class NewSpotDialogComponent implements AfterViewInit, OnDestroy {
 
   ngOnDestroy() {
     google.maps.event.clearInstanceListeners(this.placesAutocomplete);
+  }
+
+  filterTags() {
+    const keyword = this.tagValue.trim().toLowerCase();
+    const removeDupOpt = [];
+    for (const tag of this.tagOptions) {
+      if (!this.tags.has(tag)) {
+        removeDupOpt.push(tag);
+      }
+    }
+    if (!keyword) {
+      this.filteredTagOptions = removeDupOpt;
+    } else {
+      // this.filteredTagOptions = [
+      //   this.tagValue,
+      //   ...this.tagOptions.filter((tag) => tag.toLowerCase().includes(keyword)),
+      // ];
+      let hasTagValue = false;
+      this.filteredTagOptions = [];
+      for (const tag of removeDupOpt) {
+        if (tag.toLowerCase().includes(keyword)) {
+          this.filteredTagOptions.push(tag);
+          if (tag === this.tagValue) {
+            hasTagValue = true;
+          }
+        }
+      }
+      if (!hasTagValue) {
+        this.filteredTagOptions.unshift(this.tagValue);
+      }
+    }
+  }
+
+  addTag(tagValue: string) {
+    if (!tagValue) return;
+
+    this.tags.add(tagValue);
+    setTimeout(() => {
+      this.tagValue = '';
+      this.tagInput.openPanel();
+    });
   }
 
   onSelectImg(e: Event) {
