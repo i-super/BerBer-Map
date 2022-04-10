@@ -12,5 +12,8 @@ service cloud.firestore {
       allow read;
       allow write: if request.auth.uid == uid;
     }
+    match /checkpoints/{uid}/{documents=**} {
+      allow read, write: if request.auth.uid == uid;
+    }
   }
 }

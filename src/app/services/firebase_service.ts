@@ -7,6 +7,7 @@ import {
   collection,
   getDocs,
   CollectionReference,
+  addDoc,
 } from 'firebase/firestore';
 import { DocumentReference } from 'firebase/firestore/lite';
 import { getDownloadURL, getStorage, ref, uploadBytes } from 'firebase/storage';
@@ -125,34 +126,40 @@ export class FirebaseService implements OnDestroy {
       throw new Error('Cannot createSpot without logged in user.');
     }
     const uid = this.currentUser.uid;
-
     const timestamp = new Date();
+    // Write to /checkpoints/<uid>/createSpot/<checkpointId>/<checkpointData>
+    // before uploading images, and we'll remove the checkpoint when writing to
+    // firestore, so we know if things fail half way.
+    const checkpointCollection = collection(db, 'checkpoints', uid, 'createSpot');
+    const checkpoint = await addDoc(checkpointCollection, {
+      placeId,
+      timestamp,
+    });
+
+    // Store images to Firebase Storage.
     const storage = getStorage();
-
-    // We need to write spots, tags, etc. in "batch" atomically.
-    const batch = writeBatch(db);
-
-    const userRef = doc(db, 'users', uid);
-
-    // Generate new ref id for the new spot.
-    const spotRef = doc(userRef, 'spots', placeId) as DocumentReference<SpotDB>;
-
     const promises: Array<Promise<string>> = [];
     const imageIds = new Set<string>();
     for (const image of images) {
-      // Upload images to storage at /users/<uid>/spots/<spotId>/images/<imageId>.png
       let imageId = `${Math.floor(Math.random() * 10000000)}`;
       while (imageIds.has(imageId)) {
         imageId = `${Math.floor(Math.random() * 10000000)}`;
       }
-      const storagePath = `/users/${uid}/spots/${imageId}.png`;
+      // Upload images to storage at /users/<uid>/spots/<spotId>/<imageId>.png
+      const storagePath = `/users/${uid}/spots/${placeId}/${imageId}.png`;
       const storageRef = ref(storage, storagePath);
       const promise = uploadBytes(storageRef, image).then((uploadResult) => {
         return getDownloadURL(uploadResult.ref);
       });
       promises.push(promise);
     }
+
+    // We need to write spots, tags, etc. in "batch" atomically.
+    const batch = writeBatch(db);
+    const userRef = doc(db, 'users', uid);
+    const spotRef = doc(userRef, 'spots', placeId) as DocumentReference<SpotDB>;
     return Promise.all(promises).then((uploadedImages) => {
+      // Spot data.
       batch.set(
         spotRef,
         {
@@ -170,7 +177,7 @@ export class FirebaseService implements OnDestroy {
         },
         { merge: true }
       );
-
+      // Tags data.
       for (const tag of tags) {
         const tagsRef = doc(userRef, 'tags', tag) as DocumentReference<TagDB>;
         batch.set(
@@ -181,6 +188,8 @@ export class FirebaseService implements OnDestroy {
           { merge: true }
         );
       }
+      // Also remove the checkpoint as part of this batch write.
+      batch.delete(doc(checkpointCollection, checkpoint.id));
 
       return batch.commit();
     });

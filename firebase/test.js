@@ -4,7 +4,7 @@ const {
   initializeTestEnvironment,
 } = require('@firebase/rules-unit-testing');
 const fs = require('fs');
-const { getDoc, doc, setDoc } = require('firebase/firestore');
+const { getDoc, doc, setDoc, addDoc, collection } = require('firebase/firestore');
 const { getDownloadURL, ref, uploadBytes } = require('firebase/storage');
 
 const myId = 'my-uid';
@@ -69,6 +69,23 @@ describe('Firebase secuirty rules', () => {
       const db = getFirestore(myId);
       await assertSucceeds(setDoc(doc(db, `/users/${myId}/spots/123`), { foo: 'bar' }));
       await assertFails(setDoc(doc(db, `/users/${theirId}/spots/123`), { foo: 'bar' }));
+    });
+
+    it('Can only write to checkpoints/<uid> if uid matches', async () => {
+      const db = getFirestore(myId);
+      // checkpoints/<uid>/createSpot/<checkpointId>/<checkpointData>
+      await assertSucceeds(
+        addDoc(collection(db, `/checkpoints/${myId}/createSpot`), {
+          placeId: 'xyz',
+          timestamp: new Date(),
+        })
+      );
+      await assertFails(
+        addDoc(collection(db, `/checkpoints/${theirId}/createSpot`), {
+          placeId: 'xyz',
+          timestamp: new Date(),
+        })
+      );
     });
   });
 
