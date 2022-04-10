@@ -12,9 +12,7 @@ export class MapComponent {
 
   constructor(readonly firebaseService: FirebaseService) {
     this.firebaseService.authReady.subscribe(() => {
-      if (this.firebaseService.currentUser) {
-        this.firebaseService.fetchSpots();
-      }
+      this.firebaseService.fetchSpots();
     });
   }
 

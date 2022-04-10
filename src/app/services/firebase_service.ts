@@ -73,16 +73,17 @@ export class FirebaseService implements OnDestroy {
   }
 
   async fetchSpots() {
+    this.spots = [];
+    this.markers = [];
     if (!this.currentUser) {
-      throw new Error('Cannot fetchSpots without logged in user.');
+      return;
     }
     const uid = this.currentUser.uid;
     const userRef = doc(db, 'users', uid);
 
     const spotsCollection = collection(userRef, 'spots') as CollectionReference<SpotDB>;
     const querySnapshot = await getDocs(spotsCollection);
-    this.spots = [];
-    this.markers = [];
+
     querySnapshot.forEach((doc) => {
       const spot = doc.data();
       let fillColor = '';
