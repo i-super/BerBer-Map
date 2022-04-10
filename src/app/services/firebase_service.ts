@@ -62,42 +62,34 @@ export class FirebaseService {
       throw new Error('Cannot createSpot without logged in user.');
     }
     const uid = this.currentUser.uid;
-    console.log('uid', uid);
 
     const timestamp = new Date();
     const storage = getStorage();
-    console.log('storage', storage);
 
     // We need to write spots, tags, etc. in "batch" atomically.
     const batch = writeBatch(db);
-    console.log('batch', batch);
 
     const userRef = doc(db, 'users', uid);
-    console.log('userRef', userRef);
 
     // Generate new ref id for the new spot.
     const spotRef = doc(userRef, 'spots', placeId) as DocumentReference<SpotDB>;
-    console.log('spotRef', spotRef);
 
     const promises: Array<Promise<string>> = [];
     const imageIds = new Set<string>();
     for (const image of images) {
-      // Upload images to storage at /<uid>/spots/<spotId>/images/<imageId>.png
+      // Upload images to storage at /users/<uid>/spots/<spotId>/images/<imageId>.png
       let imageId = `${Math.floor(Math.random() * 10000000)}`;
       while (imageIds.has(imageId)) {
         imageId = `${Math.floor(Math.random() * 10000000)}`;
       }
-      const storagePath = `${uid}/spots/${imageId}.png`;
+      const storagePath = `/users/${uid}/spots/${imageId}.png`;
       const storageRef = ref(storage, storagePath);
-      console.log('calling uploadBytes');
       const promise = uploadBytes(storageRef, image).then((uploadResult) => {
-        console.log('done upload');
         return getDownloadURL(uploadResult.ref);
       });
       promises.push(promise);
     }
     return Promise.all(promises).then((uploadedImages) => {
-      console.log('done upload all, downloadURL: ', uploadedImages);
       batch.set(
         spotRef,
         {
