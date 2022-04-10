@@ -2,6 +2,7 @@ import { Component, OnDestroy, ViewChild } from '@angular/core';
 import { GoogleMap } from '@angular/google-maps';
 import { ReplaySubject, takeUntil } from 'rxjs';
 import { FirebaseService } from '../services/firebase_service';
+import { mapStyle } from './map_style';
 
 @Component({
   selector: 'map',
@@ -10,6 +11,8 @@ import { FirebaseService } from '../services/firebase_service';
 })
 export class MapComponent implements OnDestroy {
   @ViewChild(GoogleMap) map!: GoogleMap;
+
+  readonly mapStyle = mapStyle;
 
   private readonly destroyed = new ReplaySubject<void>(1);
 
