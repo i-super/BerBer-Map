@@ -1,5 +1,4 @@
-import { Component, ViewChild } from '@angular/core';
-import { GoogleMap } from '@angular/google-maps';
+import { Component } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { AuthDialog } from './auth_dialog/auth_dialog';
 import { auth } from './firebase';
@@ -12,14 +11,9 @@ import { FirebaseService } from './services/firebase_service';
   styleUrls: ['./app.component.scss'],
 })
 export class AppComponent {
-  @ViewChild(GoogleMap) map!: GoogleMap;
-
   readonly auth = auth;
 
-  constructor(
-    readonly firebaseService: FirebaseService,
-    private readonly matDialog: MatDialog
-  ) {}
+  constructor(readonly firebaseService: FirebaseService, private readonly matDialog: MatDialog) {}
 
   openAuthDialog() {
     this.matDialog.open(AuthDialog, {

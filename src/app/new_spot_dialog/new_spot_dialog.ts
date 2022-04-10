@@ -1,10 +1,4 @@
-import {
-  AfterViewInit,
-  Component,
-  ElementRef,
-  OnDestroy,
-  ViewChild,
-} from '@angular/core';
+import { AfterViewInit, Component, ElementRef, OnDestroy, ViewChild } from '@angular/core';
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 import { MatDialogRef } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
@@ -33,7 +27,7 @@ export class NewSpotDialogComponent implements AfterViewInit, OnDestroy {
   name = '';
 
   selectedCategory?: string;
-  categories = ['Hike', 'Food'];
+  categories = ['Hike', 'Food', 'Accommodation'];
   selectedIcon?: Mark;
   icons = [
     { label: 'Awesome', icon: 'favorite', color: '#ff616f' },
@@ -50,6 +44,9 @@ export class NewSpotDialogComponent implements AfterViewInit, OnDestroy {
     'landscape',
     'toilet',
     'picnic',
+    'shower',
+    'fire pit',
+    'parking diffcult',
   ];
   filteredTagOptions: string[] = [];
   notes = '';
@@ -67,15 +64,11 @@ export class NewSpotDialogComponent implements AfterViewInit, OnDestroy {
   }
 
   ngAfterViewInit() {
-    this.placesAutocomplete = new google.maps.places.Autocomplete(
-      this.spotInput.nativeElement,
-      {
-        fields: ['place_id', 'geometry', 'icon', 'name'],
-      }
-    );
+    this.placesAutocomplete = new google.maps.places.Autocomplete(this.spotInput.nativeElement, {
+      fields: ['place_id', 'geometry', 'icon', 'name'],
+    });
     this.placesAutocomplete.addListener('place_changed', () => {
       const place = this.placesAutocomplete.getPlace();
-      console.log(place);
       if (place.geometry) {
         this.spotLocation = place;
         this.name = place.name ?? '';
@@ -138,9 +131,7 @@ export class NewSpotDialogComponent implements AfterViewInit, OnDestroy {
         .then(({ file }) => {
           this.uploadImages.push({
             file,
-            previewURL: this.domSanitizer.bypassSecurityTrustUrl(
-              URL.createObjectURL(file)
-            ),
+            previewURL: this.domSanitizer.bypassSecurityTrustUrl(URL.createObjectURL(file)),
           });
         })
         .catch((error) => {
@@ -162,21 +153,6 @@ export class NewSpotDialogComponent implements AfterViewInit, OnDestroy {
       return;
     }
 
-    console.log(
-      'spotLocation:',
-      this.spotLocation,
-      ', selectedCategory:',
-      this.selectedCategory,
-      ', selectedIcon:',
-      this.selectedIcon,
-      ', tags:',
-      this.tags,
-      ', notes:',
-      this.notes,
-      ' uploadImages:',
-      this.uploadImages
-    );
-
     this.loading = true;
 
     this.firebaseService
@@ -193,6 +169,7 @@ export class NewSpotDialogComponent implements AfterViewInit, OnDestroy {
       })
       .then(() => {
         this.matDialogRef.close();
+        this.firebaseService.fetchSpots();
       })
       .catch((error) => {
         console.error(error);
