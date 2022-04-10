@@ -5,6 +5,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { resizeImg } from '../image_processing';
 import { MatAutocompleteTrigger } from '@angular/material/autocomplete';
 import { FirebaseService } from '../services/firebase_service';
+import { iconColorMap, iconLabelMap } from '../services/marker_icon';
 
 interface Mark {
   label: string;
@@ -30,9 +31,9 @@ export class NewSpotDialogComponent implements AfterViewInit, OnDestroy {
   categories = ['Hike', 'Food', 'Accommodation'];
   selectedIcon?: Mark;
   icons = [
-    { label: 'Awesome', icon: 'favorite', color: '#ff616f' },
-    { label: 'Good', icon: 'check_circle', color: '#4caf50' },
-    { label: 'Naah', icon: 'thumb_down', color: '#0091ea' },
+    { label: iconLabelMap['Awesome'], icon: 'favorite', color: iconColorMap['favorite'] },
+    { label: iconLabelMap['Good'], icon: 'check_circle', color: iconColorMap['check_circle'] },
+    { label: iconLabelMap['Naah'], icon: 'thumb_down', color: iconColorMap['thumb_down'] },
   ];
   tags: Set<string> = new Set<string>();
   tagValue = '';

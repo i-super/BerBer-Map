@@ -1,4 +1,4 @@
-import { Component, OnDestroy, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, OnDestroy, ViewChild } from '@angular/core';
 import { GoogleMap } from '@angular/google-maps';
 import { ReplaySubject, takeUntil } from 'rxjs';
 import { FirebaseService } from '../services/firebase_service';
@@ -9,7 +9,7 @@ import { mapStyle } from './map_style';
   templateUrl: 'map.html',
   styleUrls: ['./map.scss'],
 })
-export class MapComponent implements OnDestroy {
+export class MapComponent implements AfterViewInit, OnDestroy {
   @ViewChild(GoogleMap) map!: GoogleMap;
 
   readonly mapStyle = mapStyle;
@@ -20,6 +20,21 @@ export class MapComponent implements OnDestroy {
     this.firebaseService.authReady.pipe(takeUntil(this.destroyed)).subscribe(() => {
       this.firebaseService.fetchSpots();
     });
+  }
+
+  ngAfterViewInit() {
+    // Get user's geolocation.
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition((position: GeolocationPosition) => {
+        const pos = {
+          lat: position.coords.latitude,
+          lng: position.coords.longitude,
+        };
+        this.map.panTo(pos);
+      });
+    } else {
+      // Browser doesn't support Geolocation
+    }
   }
 
   ngOnDestroy() {

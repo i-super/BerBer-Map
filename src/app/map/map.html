@@ -1,7 +1,7 @@
 <google-map
   height="100%"
   width="100%"
-  [options]="{ disableDefaultUI: true, zoomControl: true, styles: mapStyle }"
+  [options]="{ disableDefaultUI: true, zoomControl: true, styles: mapStyle, zoom: 11 }"
 >
   <map-marker
     *ngFor="let marker of firebaseService.markers"
