@@ -17,6 +17,9 @@ import { MatTabsModule } from '@angular/material/tabs';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { NgModule } from '@angular/core';
 
+import { GalleryModule } from 'ng-gallery';
+import { LightboxModule } from 'ng-gallery/lightbox';
+
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { AuthDialog } from './auth_dialog/auth_dialog';
@@ -37,7 +40,11 @@ import { SpotInfoDialogComponent } from './spot_info/spot_info_dialog';
     BrowserAnimationsModule,
     BrowserModule,
     FormsModule,
+    GalleryModule,
     GoogleMapsModule,
+    LightboxModule.withConfig({
+      panelClass: 'fullscreen',
+    }),
     MatAutocompleteModule,
     MatButtonModule,
     MatChipsModule,

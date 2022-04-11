@@ -3,6 +3,8 @@
 @use '@angular/material' as mat;
 // Plus imports for other components in your app.
 
+@import '~@angular/cdk/overlay-prebuilt.css';
+
 // Include the common styles for Angular Material. We include this here so that you only
 // have to load a single css file for Angular Material in your app.
 // Be sure that you only ever include this mixin once!
@@ -134,7 +136,7 @@ body {
 
 .dialog-wrapper {
   background: #f5f5f5;
-  padding: 32px;
+  padding: 60px 32px;
   overflow: auto;
 
   @media screen and (min-width: 600px) {

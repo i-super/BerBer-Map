@@ -81,6 +81,7 @@ export class MapComponent implements AfterViewInit, OnDestroy {
       maxHeight: '100vh',
       maxWidth: '100vw',
       data: marker,
+      autoFocus: false,
     });
   }
 }

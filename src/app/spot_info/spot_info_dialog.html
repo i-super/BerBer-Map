@@ -1,6 +1,4 @@
 <div class="dialog-wrapper">
-  <div>Images</div>
-
   <div class="spot-content">
     <div class="spot-title-wrapper">
       <div class="spot-name">{{data.spot.name}}</div>
@@ -12,18 +10,47 @@
 
     <div class="tag-row">
       <div *ngFor="let tag of data.spot.tags" class="tag-wrapper">
-        <div>{{tag}}</div>
+        <div class="tag-content">{{tag}}</div>
       </div>
     </div>
 
+    <div class="image-wrapper">
+      <div *ngIf="data.spot.images.length !== 0" class="images" [lightbox]="currentImageIndex">
+        <img [src]="items[currentImageIndex].data.thumb" />
+      </div>
+      <button
+        *ngIf="currentImageIndex !== 0"
+        class="previous-img-button image-buttons"
+        mat-icon-button
+        (click)="swipeImage(currentImageIndex - 1)"
+      >
+        <mat-icon>arrow_back_ios_new</mat-icon>
+      </button>
+
+      <button
+        *ngIf="currentImageIndex < data.spot.images.length - 1"
+        class="next-img-button image-buttons"
+        mat-icon-button
+        (click)="swipeImage(currentImageIndex + 1)"
+      >
+        <mat-icon>arrow_forward_ios</mat-icon>
+      </button>
+    </div>
+
     <div *ngIf="data.spot.notes" class="note-wrapper">
-      <div class="note-title">Notes:</div>
-      <div class="note-content">{{data.spot.notes}}</div>
+      <div class="note-container">
+        <div class="note-title">Notes:</div>
+        <div class="note-content">{{data.spot.notes}}</div>
+      </div>
     </div>
   </div>
 
-  <button class="edit-button" mat-icon-button matTooltip="Edit spot" matTooltipPosition="left">
+  <button class="edit-button" mat-icon-button matTooltip="Edit spot" matTooltipPosition="right">
     <!-- (click)="editSpot()" -->
     <mat-icon>edit</mat-icon>
+  </button>
+
+  <button class="close-button" mat-icon-button mat-dialog-close>
+    <mat-icon>close</mat-icon>
   </button>
 </div>

@@ -67,6 +67,7 @@ mat-form-field {
   border-radius: 15px;
   span {
     line-height: 30px;
+    white-space: nowrap;
   }
   button {
     position: absolute;
@@ -75,7 +76,7 @@ mat-form-field {
     transform: translateY(-50%);
     width: 20px;
     height: 20px;
-    transition: all 0.3s;
+    transition: background 0.3s;
     &:hover {
       background: #9fc9dc;
     }

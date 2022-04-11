@@ -19,6 +19,7 @@
   font-size: 40px;
   font-family: 'Montserrat Alternates', sans-serif;
   // font-family: 'Questrial', sans-serif;
+  line-height: 1.2;
   color: #2e4c6d;
 }
 .category {
@@ -45,23 +46,101 @@
   background: #e6f2f6;
   border: 1px solid #9fc9dc;
   border-radius: 15px;
-  span {
+  .tag-content {
     line-height: 30px;
+    white-space: nowrap;
   }
 }
 
+.image-wrapper {
+  position: relative;
+  margin: auto;
+  width: 600px;
+  height: 0;
+  margin-bottom: 20px;
+  padding-top: 56.25%;
+  max-width: 100%;
+  .images {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: scale-down;
+    }
+  }
+}
+
+.image-buttons {
+  width: 40px;
+  height: 40px;
+  line-height: 40px;
+  transition: background 0.3s;
+  mat-icon {
+    color: #396fb0;
+    transition: color 0.3s;
+  }
+  &:hover {
+    background: rgba(#e1e1e1, 0.5);
+    mat-icon {
+      color: #2e4c6d;
+    }
+  }
+}
+
+.previous-img-button {
+  position: absolute;
+  top: 50%;
+  left: 20px;
+  transform: translateY(-50%);
+}
+
+.next-img-button {
+  position: absolute;
+  top: 50%;
+  right: 20px;
+  transform: translateY(-50%);
+}
+
 .note-wrapper {
-  background: #efefef;
-  padding: 14px;
-  border-radius: 8px;
-  color: #626262;
+  display: flex;
+  .note-container {
+    background: #efefef;
+    padding: 14px;
+    width: 0;
+    flex: 1;
+    max-width: 100%;
+    border-radius: 8px;
+    color: #626262;
+  }
   .note-title {
     font-family: 'Alegreya Sans SC', sans-serif;
     font-size: 15px;
   }
+  .note-content {
+    white-space: pre-wrap;
+  }
 }
 
 .edit-button {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  mat-icon {
+    color: #396fb0;
+    transition: color 0.3s;
+  }
+  &:hover {
+    mat-icon {
+      color: #2e4c6d;
+    }
+  }
+}
+
+.close-button {
   position: absolute;
   top: 20px;
   right: 20px;

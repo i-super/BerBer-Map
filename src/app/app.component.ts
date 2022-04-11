@@ -24,6 +24,7 @@ export class AppComponent {
 
   openAddNewSpotDialog(): void {
     this.matDialog.open(NewSpotDialogComponent, {
+      disableClose: true,
       maxHeight: '100vh',
       maxWidth: '100vw',
     });
