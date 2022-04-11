@@ -31,9 +31,13 @@ export class NewSpotDialogComponent implements AfterViewInit, OnDestroy {
   categories = ['Hike', 'Food', 'Accommodation'];
   selectedIcon?: Mark;
   icons = [
-    { label: iconLabelMap['Awesome'], icon: 'favorite', color: iconColorMap['favorite'] },
-    { label: iconLabelMap['Good'], icon: 'check_circle', color: iconColorMap['check_circle'] },
-    { label: iconLabelMap['Naah'], icon: 'thumb_down', color: iconColorMap['thumb_down'] },
+    { label: iconLabelMap['favorite'], icon: 'favorite', color: iconColorMap['favorite'] },
+    {
+      label: iconLabelMap['check_circle'],
+      icon: 'check_circle',
+      color: iconColorMap['check_circle'],
+    },
+    { label: iconLabelMap['thumb_down'], icon: 'thumb_down', color: iconColorMap['thumb_down'] },
   ];
   tags: Set<string> = new Set<string>();
   tagValue = '';
@@ -140,6 +144,20 @@ export class NewSpotDialogComponent implements AfterViewInit, OnDestroy {
           this.matSnackBar.open(error.message, 'Dismiss');
         });
     }
+  }
+
+  moveImage(index: number, newIndex: number) {
+    if (
+      index < 0 ||
+      index >= this.uploadImages.length ||
+      newIndex < 0 ||
+      newIndex >= this.uploadImages.length
+    ) {
+      return;
+    }
+    const temp = this.uploadImages[index];
+    this.uploadImages[index] = this.uploadImages[newIndex];
+    this.uploadImages[newIndex] = temp;
   }
 
   onSave(): void {

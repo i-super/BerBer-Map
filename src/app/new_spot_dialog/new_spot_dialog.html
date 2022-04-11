@@ -18,10 +18,7 @@
   <!-- Category -->
   <div class="row">
     <div class="title">Category</div>
-    <mat-radio-group
-      aria-label="Select an option"
-      [(ngModel)]="selectedCategory"
-    >
+    <mat-radio-group aria-label="Select an option" [(ngModel)]="selectedCategory">
       <mat-radio-button *ngFor="let category of categories" [value]="category">
         {{category}}
       </mat-radio-button>
@@ -34,9 +31,7 @@
     <mat-radio-group aria-label="Select an option" [(ngModel)]="selectedIcon">
       <mat-radio-button *ngFor="let icon of icons" [value]="icon">
         {{icon.label}}
-        <mat-icon class="mark-icon" [style.color]="icon.color">
-          {{icon.icon}}
-        </mat-icon>
+        <mat-icon class="mark-icon" [style.color]="icon.color"> {{icon.icon}} </mat-icon>
       </mat-radio-button>
     </mat-radio-group>
   </div>
@@ -47,11 +42,7 @@
 
     <div *ngFor="let tag of tags" class="tag-wrapper">
       <span> {{tag}} </span>
-      <button
-        mat-icon-button
-        matTooltipPosition="above"
-        (click)="tags.delete(tag)"
-      >
+      <button mat-icon-button matTooltipPosition="above" (click)="tags.delete(tag)">
         <mat-icon>clear</mat-icon>
       </button>
     </div>
@@ -91,12 +82,10 @@
   <!-- Upload images -->
   <div class="row title">Images</div>
   <div class="row image-row">
-    <div
-      *ngFor="let image of uploadImages; let i = index"
-      class="image-wrapper"
-    >
+    <div *ngFor="let image of uploadImages; let i = index" class="image-wrapper">
       <img [src]="image.previewURL" />
       <button
+        class="remove-image-button"
         mat-icon-button
         matTooltip="Remove image"
         matTooltipPosition="above"
@@ -104,15 +93,33 @@
       >
         <mat-icon>remove</mat-icon>
       </button>
+
+      <div class="move-image-order">
+        <button
+          mat-icon-button
+          [disabled]="i === 0"
+          [class.disabled]="i === 0"
+          matTooltip="Move forward"
+          matTooltipPosition="above"
+          (click)="moveImage(i, i - 1)"
+        >
+          <mat-icon>chevron_left</mat-icon>
+        </button>
+        <button
+          mat-icon-button
+          [disabled]="i === uploadImages.length - 1"
+          [class.disabled]="i === uploadImages.length - 1"
+          matTooltip="Move back forward"
+          matTooltipPosition="above"
+          (click)="moveImage(i, i + 1)"
+        >
+          <mat-icon>chevron_right</mat-icon>
+        </button>
+      </div>
     </div>
 
     <div class="upload-img">
-      <input
-        type="file"
-        accept="image/*"
-        multiple
-        (change)="onSelectImg($event)"
-      />
+      <input type="file" accept="image/*" multiple (change)="onSelectImg($event)" />
       <mat-icon class="upload-icon">collections</mat-icon>
       <span>Add Photo</span>
     </div>
@@ -120,16 +127,7 @@
 
   <!-- Save and cancel button -->
   <div class="row button-row" mat-dialog-actions>
-    <button class="cancel-button" mat-raised-button mat-dialog-close>
-      Cancel
-    </button>
-    <button
-      class="save-button"
-      mat-raised-button
-      color="accent"
-      (click)="onSave()"
-    >
-      Save
-    </button>
+    <button class="cancel-button" mat-raised-button mat-dialog-close>Cancel</button>
+    <button class="save-button" mat-raised-button color="accent" (click)="onSave()">Save</button>
   </div>
 </div>
