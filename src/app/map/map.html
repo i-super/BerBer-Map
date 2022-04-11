@@ -4,6 +4,11 @@
   [options]="{ disableDefaultUI: true, zoomControl: true, styles: mapStyle, zoom: 11 }"
 >
   <map-marker
+    *ngIf="myLocation"
+    [position]="myLocation"
+    [options]="myLocationMarkerOptions"
+  ></map-marker>
+  <map-marker
     *ngFor="let marker of firebaseService.markers"
     [position]="marker.position"
     [options]="marker.options"
@@ -11,3 +16,13 @@
     (mapClick)="onMarkerClick(marker)"
   ></map-marker>
 </google-map>
+
+<button
+  #centerButton
+  class="center-button"
+  matTooltip="Center to your location"
+  matTooltipPosition="left"
+  (click)="centerToUserLocation()"
+>
+  <mat-icon>center_focus_strong</mat-icon>
+</button>
