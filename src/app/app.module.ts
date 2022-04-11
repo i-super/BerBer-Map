@@ -22,9 +22,16 @@ import { AppComponent } from './app.component';
 import { AuthDialog } from './auth_dialog/auth_dialog';
 import { NewSpotDialogComponent } from './new_spot_dialog/new_spot_dialog';
 import { MapComponent } from './map/map';
+import { SpotInfoDialogComponent } from './spot_info/spot_info_dialog';
 
 @NgModule({
-  declarations: [AuthDialog, AppComponent, MapComponent, NewSpotDialogComponent],
+  declarations: [
+    AuthDialog,
+    AppComponent,
+    MapComponent,
+    NewSpotDialogComponent,
+    SpotInfoDialogComponent,
+  ],
   imports: [
     AppRoutingModule,
     BrowserAnimationsModule,

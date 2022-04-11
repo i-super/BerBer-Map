@@ -1,0 +1,77 @@
+.dialog-wrapper {
+  position: relative;
+}
+
+.spot-title-wrapper {
+  display: flex;
+  align-items: baseline;
+  .spot-title-info {
+    display: flex;
+    align-items: flex-end;
+    margin-left: 16px;
+  }
+  mat-icon {
+    margin-left: 7px;
+  }
+}
+
+.spot-name {
+  font-size: 40px;
+  font-family: 'Montserrat Alternates', sans-serif;
+  // font-family: 'Questrial', sans-serif;
+  color: #2e4c6d;
+}
+.category {
+  font-size: 22px;
+  color: #767676;
+}
+
+.tag-row {
+  display: flex;
+  align-items: center;
+  margin: 20px 0;
+  padding: 2px 0;
+  font-size: 16px;
+  color: #2e4c6d;
+}
+
+.tag-wrapper {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  margin-right: 8px;
+  padding: 0 14px;
+  height: 30px;
+  background: #e6f2f6;
+  border: 1px solid #9fc9dc;
+  border-radius: 15px;
+  span {
+    line-height: 30px;
+  }
+}
+
+.note-wrapper {
+  background: #efefef;
+  padding: 14px;
+  border-radius: 8px;
+  color: #626262;
+  .note-title {
+    font-family: 'Alegreya Sans SC', sans-serif;
+    font-size: 15px;
+  }
+}
+
+.edit-button {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  mat-icon {
+    color: #396fb0;
+    transition: color 0.3s;
+  }
+  &:hover {
+    mat-icon {
+      color: #2e4c6d;
+    }
+  }
+}

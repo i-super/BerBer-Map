@@ -1,0 +1,29 @@
+<div class="dialog-wrapper">
+  <div>Images</div>
+
+  <div class="spot-content">
+    <div class="spot-title-wrapper">
+      <div class="spot-name">{{data.spot.name}}</div>
+      <div class="spot-title-info">
+        <div class="category">#{{data.spot.category}}</div>
+        <mat-icon [ngStyle]="{color: iconColorMap[data.spot.icon]}">{{data.spot.icon}}</mat-icon>
+      </div>
+    </div>
+
+    <div class="tag-row">
+      <div *ngFor="let tag of data.spot.tags" class="tag-wrapper">
+        <div>{{tag}}</div>
+      </div>
+    </div>
+
+    <div *ngIf="data.spot.notes" class="note-wrapper">
+      <div class="note-title">Notes:</div>
+      <div class="note-content">{{data.spot.notes}}</div>
+    </div>
+  </div>
+
+  <button class="edit-button" mat-icon-button matTooltip="Edit spot" matTooltipPosition="left">
+    <!-- (click)="editSpot()" -->
+    <mat-icon>edit</mat-icon>
+  </button>
+</div>

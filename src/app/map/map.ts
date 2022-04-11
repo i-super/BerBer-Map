@@ -3,6 +3,8 @@ import { GoogleMap } from '@angular/google-maps';
 import { ReplaySubject, takeUntil } from 'rxjs';
 import { FirebaseService } from '../services/firebase_service';
 import { mapStyle } from './map_style';
+import { MatDialog } from '@angular/material/dialog';
+import { SpotInfoDialogComponent } from '../spot_info/spot_info_dialog';
 
 @Component({
   selector: 'map',
@@ -30,7 +32,7 @@ export class MapComponent implements AfterViewInit, OnDestroy {
 
   private readonly destroyed = new ReplaySubject<void>(1);
 
-  constructor(readonly firebaseService: FirebaseService) {
+  constructor(readonly firebaseService: FirebaseService, private readonly matDialog: MatDialog) {
     this.firebaseService.authReady.pipe(takeUntil(this.destroyed)).subscribe(() => {
       this.firebaseService.fetchSpots();
     });
@@ -44,8 +46,10 @@ export class MapComponent implements AfterViewInit, OnDestroy {
           lat: position.coords.latitude,
           lng: position.coords.longitude,
         };
+        if (!this.myLocation) {
+          this.map.panTo(pos);
+        }
         this.myLocation = pos;
-        this.map.panTo(pos);
       });
     } else {
       // Browser doesn't support Geolocation.
@@ -73,5 +77,10 @@ export class MapComponent implements AfterViewInit, OnDestroy {
 
   onMarkerClick(marker: any) {
     console.log("Hey~ I'm Mark!", marker);
+    this.matDialog.open(SpotInfoDialogComponent, {
+      maxHeight: '100vh',
+      maxWidth: '100vw',
+      data: marker,
+    });
   }
 }

@@ -46,7 +46,7 @@ interface TagDB {
   spots: string[];
 }
 
-interface Marker {
+export interface Marker {
   position: google.maps.LatLngLiteral;
   options: google.maps.MarkerOptions;
   spot: SpotDB;
