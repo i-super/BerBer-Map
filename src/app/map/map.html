@@ -1,7 +1,13 @@
 <google-map
   height="100%"
   width="100%"
-  [options]="{ disableDefaultUI: true, zoomControl: true, styles: mapStyle, zoom: 11 }"
+  [options]="{
+    disableDefaultUI: true,
+    clickableIcons: false,
+    zoomControl: true,
+    styles: mapStyle,
+    zoom: 11
+  }"
 >
   <map-marker
     *ngIf="myLocation"
