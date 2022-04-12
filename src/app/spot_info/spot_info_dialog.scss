@@ -53,20 +53,23 @@
   }
 }
 
-.image-wrapper {
+.images {
   position: relative;
   margin: auto;
   width: 600px;
   height: 0;
-  margin-bottom: 20px;
   padding-top: 56.25%;
   max-width: 100%;
-  .images {
+  overflow: hidden;
+  .image-wrapper {
     position: absolute;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
+    &:not(.dragging) {
+      transition: transform 0.3s ease;
+    }
     img {
       width: 100%;
       height: 100%;
@@ -104,6 +107,30 @@
   top: 50%;
   right: 20px;
   transform: translateY(-50%);
+}
+
+.images-dots {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  overflow: hidden;
+
+  .dot {
+    $size: 6px;
+    width: $size;
+    height: $size;
+    border-radius: 50%;
+    margin: 12px 3px 20px;
+    background: #c1deea;
+    transition: background 0.3s ease;
+    transition-property: backgroud, transform;
+
+    &.active {
+      transform: scale(1.33);
+      background: #396fb0;
+    }
+  }
 }
 
 .note-wrapper {

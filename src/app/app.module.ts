@@ -23,8 +23,9 @@ import { LightboxModule } from 'ng-gallery/lightbox';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { AuthDialog } from './auth_dialog/auth_dialog';
-import { NewSpotDialogComponent } from './new_spot_dialog/new_spot_dialog';
 import { MapComponent } from './map/map';
+import { NewSpotComponent } from './new_spot/new_spot';
+import { NewSpotDialogComponent } from './new_spot_dialog/new_spot_dialog';
 import { SpotInfoDialogComponent } from './spot_info/spot_info_dialog';
 
 @NgModule({
@@ -32,6 +33,7 @@ import { SpotInfoDialogComponent } from './spot_info/spot_info_dialog';
     AuthDialog,
     AppComponent,
     MapComponent,
+    NewSpotComponent,
     NewSpotDialogComponent,
     SpotInfoDialogComponent,
   ],

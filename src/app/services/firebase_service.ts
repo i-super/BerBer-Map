@@ -17,6 +17,7 @@ import { auth, db } from '../firebase';
 import { iconColorMap } from './marker_icon';
 
 interface CreateSpotParams {
+  edit: boolean;
   placeId: string;
   name: string;
   lat: number;
@@ -25,10 +26,10 @@ interface CreateSpotParams {
   icon: string;
   tags: string[];
   notes: string;
-  images: File[];
+  images: { file?: File; storageURL?: string }[];
 }
 
-interface SpotDB {
+export interface SpotDB {
   placeId: string;
   createdAt: Date;
   updatedAt: Date;
@@ -112,6 +113,7 @@ export class FirebaseService implements OnDestroy {
   }
 
   async createSpot({
+    edit,
     placeId,
     name,
     lat,
@@ -122,6 +124,9 @@ export class FirebaseService implements OnDestroy {
     notes,
     images,
   }: CreateSpotParams) {
+    if (edit) {
+      throw new Error('Unimplemented.');
+    }
     if (!this.currentUser) {
       throw new Error('Cannot createSpot without logged in user.');
     }
@@ -141,6 +146,8 @@ export class FirebaseService implements OnDestroy {
     const promises: Array<Promise<string>> = [];
     const imageIds = new Set<string>();
     for (const image of images) {
+      if (!image.file) continue;
+
       let imageId = `${Math.floor(Math.random() * 10000000)}`;
       while (imageIds.has(imageId)) {
         imageId = `${Math.floor(Math.random() * 10000000)}`;
@@ -148,7 +155,7 @@ export class FirebaseService implements OnDestroy {
       // Upload images to storage at /users/<uid>/spots/<spotId>/<imageId>.png
       const storagePath = `/users/${uid}/spots/${placeId}/${imageId}.png`;
       const storageRef = ref(storage, storagePath);
-      const promise = uploadBytes(storageRef, image).then((uploadResult) => {
+      const promise = uploadBytes(storageRef, image.file).then((uploadResult) => {
         return getDownloadURL(uploadResult.ref);
       });
       promises.push(promise);
