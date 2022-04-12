@@ -18,10 +18,10 @@
 .spot-name {
   font-size: 40px;
   font-family: 'Montserrat Alternates', sans-serif;
-  // font-family: 'Questrial', sans-serif;
   line-height: 1.2;
   color: #2e4c6d;
 }
+
 .category {
   font-family: 'Questrial', sans-serif;
   font-size: 22px;
@@ -31,17 +31,15 @@
 .tag-row {
   display: flex;
   align-items: center;
-  margin: 20px 0;
+  flex-wrap: wrap;
+  margin: 20px 0 14px;
   padding: 2px 0;
   font-size: 16px;
   color: #2e4c6d;
 }
 
 .tag-wrapper {
-  display: flex;
-  align-items: center;
-  flex-wrap: wrap;
-  margin-right: 8px;
+  margin: 0 8px 6px 0;
   padding: 0 14px;
   height: 30px;
   background: #e6f2f6;

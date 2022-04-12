@@ -39,35 +39,37 @@
 <div class="row">
   <div class="title">Tags</div>
 
-  <div *ngFor="let tag of tags" class="tag-wrapper">
-    <span> {{tag}} </span>
-    <button mat-icon-button matTooltipPosition="above" (click)="tags.delete(tag)">
-      <mat-icon>clear</mat-icon>
-    </button>
-  </div>
+  <div *ngIf="tags" class="tags">
+    <div *ngFor="let tag of tags" class="tag-wrapper">
+      <span> {{tag}} </span>
+      <button mat-icon-button matTooltipPosition="above" (click)="tags.delete(tag)">
+        <mat-icon>clear</mat-icon>
+      </button>
+    </div>
 
-  <mat-form-field class="no-padding" appearance="outline">
-    <mat-label>Features</mat-label>
-    <input
-      #tagInput
-      type="text"
-      [(ngModel)]="tagValue"
-      (ngModelChange)="filterTags()"
-      placeholder="Ex: Difficulty, Amenities..."
-      matInput
-      [matAutocomplete]="auto"
-    />
-    <mat-autocomplete
-      #auto="matAutocomplete"
-      autoActiveFirstOption
-      (optionSelected)="addTag($event.option.value)"
-      (opened)="filterTags()"
-    >
-      <mat-option *ngFor="let option of filteredTagOptions" [value]="option">
-        {{option}}
-      </mat-option>
-    </mat-autocomplete>
-  </mat-form-field>
+    <mat-form-field class="no-padding" appearance="outline">
+      <mat-label>Features</mat-label>
+      <input
+        #tagInput
+        type="text"
+        [(ngModel)]="tagValue"
+        (ngModelChange)="filterTags()"
+        placeholder="Ex: Difficulty, Amenities..."
+        matInput
+        [matAutocomplete]="auto"
+      />
+      <mat-autocomplete
+        #auto="matAutocomplete"
+        autoActiveFirstOption
+        (optionSelected)="addTag($event.option.value)"
+        (opened)="filterTags()"
+      >
+        <mat-option *ngFor="let option of filteredTagOptions" [value]="option">
+          {{option}}
+        </mat-option>
+      </mat-autocomplete>
+    </mat-form-field>
+  </div>
 </div>
 
 <!-- Notes -->

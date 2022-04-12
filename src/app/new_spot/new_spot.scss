@@ -54,12 +54,17 @@ mat-form-field {
   padding-left: 5px;
 }
 
+.tags {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
 .tag-wrapper {
   position: relative;
   display: flex;
   align-items: center;
-  flex-wrap: wrap;
-  margin-right: 8px;
+  margin: 0 8px 5px 0;
   padding: 0 34px 0 14px;
   height: 30px;
   background: #e6f2f6;
