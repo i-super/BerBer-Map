@@ -25,6 +25,7 @@
         *ngIf="data.spot.images.length"
         class="images"
         (pointerdown)="onImagesPointerDown($event)"
+        (pointercancel)="onImagesPointerCancel($event)"
       >
         <div
           *ngFor="let image of data.spot.images; let i = index"

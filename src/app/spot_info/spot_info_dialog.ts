@@ -46,7 +46,7 @@ export class SpotInfoDialogComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
-    this.removeImageEventListeners();
+    this.removeImagesEventListeners();
   }
 
   swipeImage(newIndex: number) {
@@ -59,23 +59,23 @@ export class SpotInfoDialogComponent implements OnInit, OnDestroy {
   onImagesPointerDown(event: PointerEvent) {
     event.preventDefault();
     event.stopPropagation();
-    window.addEventListener('pointermove', this.onImagePointerMove);
-    window.addEventListener('pointerup', this.onImagePointerUp);
+    window.addEventListener('pointermove', this.onImagesPointerMove);
+    window.addEventListener('pointerup', this.onImagesPointerUp);
     this.imagePointerStartPos = { x: event.clientX, y: event.clientY };
     this.imagesWidth = this.imagesRef?.nativeElement.clientWidth;
   }
 
-  onImagePointerMove = (event: PointerEvent) => {
+  onImagesPointerMove = (event: PointerEvent) => {
     event.preventDefault();
     event.stopPropagation();
     if (!this.imagePointerStartPos || !this.imagesWidth) return;
     this.imagePointerCurrentPos = { x: event.clientX, y: event.clientY };
   };
 
-  onImagePointerUp = (event: PointerEvent) => {
+  onImagesPointerUp = (event: PointerEvent) => {
     event.preventDefault();
     event.stopPropagation();
-    this.removeImageEventListeners();
+    this.removeImagesEventListeners();
     if (!this.imagePointerStartPos || !this.imagesWidth) return;
     const dx = event.clientX - this.imagePointerStartPos.x;
     const threshold = this.imagesWidth * NEXT_IMAGE_DRAG_THRESHOLD;
@@ -92,6 +92,10 @@ export class SpotInfoDialogComponent implements OnInit, OnDestroy {
     }
     this.imagePointerStartPos = undefined;
     this.imagePointerCurrentPos = undefined;
+  };
+
+  onImagesPointerCancel = (event: PointerEvent) => {
+    this.removeImagesEventListeners();
   };
 
   getImageTransform(i: number) {
@@ -134,9 +138,9 @@ export class SpotInfoDialogComponent implements OnInit, OnDestroy {
     return undefined;
   }
 
-  private removeImageEventListeners() {
-    window.removeEventListener('pointermove', this.onImagePointerMove);
-    window.removeEventListener('pointerup', this.onImagePointerUp);
+  private removeImagesEventListeners() {
+    window.removeEventListener('pointermove', this.onImagesPointerMove);
+    window.removeEventListener('pointerup', this.onImagesPointerUp);
   }
 
   editSpot() {
