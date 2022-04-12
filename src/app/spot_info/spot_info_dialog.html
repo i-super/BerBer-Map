@@ -1,10 +1,12 @@
 <div class="dialog-wrapper">
   <div class="spot-content">
     <div class="spot-title-wrapper">
-      <div class="spot-name">{{data.spot.name}}</div>
-      <div class="spot-title-info">
-        <div class="category">#{{data.spot.category}}</div>
-        <mat-icon [ngStyle]="{color: iconColorMap[data.spot.icon]}">{{data.spot.icon}}</mat-icon>
+      <div class="spot-name">
+        {{data.spot.name}}&nbsp;
+        <div class="spot-title-info">
+          <div class="category">#{{data.spot.category}}</div>
+          <mat-icon [ngStyle]="{color: iconColorMap[data.spot.icon]}">{{data.spot.icon}}</mat-icon>
+        </div>
       </div>
     </div>
 
