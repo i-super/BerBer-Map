@@ -1,11 +1,41 @@
+mat-form-field {
+  margin-top: 10px;
+  &:first-child {
+    margin-top: 18px;
+  }
+  &:last-child {
+    margin-bottom: 18px;
+  }
+  &.no-padding {
+    ::ng-deep {
+      .mat-form-field-wrapper {
+        padding-bottom: 0;
+      }
+    }
+  }
+}
+
+.auth-inputs {
+  display: flex;
+  flex-flow: column;
+}
+
 .sign-in-with-google {
   display: block;
-  margin: 8px;
+  width: 100%;
+  color: white;
+  background: #d32f2f;
+  transition: background 0.3s;
+  &:hover {
+    background: #c62828;
+  }
 }
 
 .buttons {
   display: flex;
   align-items: center;
+  justify-content: center;
+  margin-top: 20px;
 
   & > *:not(:first-child) {
     margin-left: 8px;
