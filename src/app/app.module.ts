@@ -26,6 +26,7 @@ import { AuthDialog } from './auth_dialog/auth_dialog';
 import { MapComponent } from './map/map';
 import { NewSpotComponent } from './new_spot/new_spot';
 import { NewSpotDialogComponent } from './new_spot_dialog/new_spot_dialog';
+import { ResetPasswordDialog } from './reset_password_dialog/reset_password_dialog';
 import { SpotInfoDialogComponent } from './spot_info/spot_info_dialog';
 
 @NgModule({
@@ -35,6 +36,7 @@ import { SpotInfoDialogComponent } from './spot_info/spot_info_dialog';
     MapComponent,
     NewSpotComponent,
     NewSpotDialogComponent,
+    ResetPasswordDialog,
     SpotInfoDialogComponent,
   ],
   imports: [
@@ -61,7 +63,12 @@ import { SpotInfoDialogComponent } from './spot_info/spot_info_dialog';
     MatRadioModule,
     MatTooltipModule,
   ],
-  providers: [{ provide: MAT_SNACK_BAR_DEFAULT_OPTIONS, useValue: { duration: 5000 } }],
+  providers: [
+    {
+      provide: MAT_SNACK_BAR_DEFAULT_OPTIONS,
+      useValue: { duration: 5000, horizontalPosition: 'center', verticalPosition: 'top' },
+    },
+  ],
   bootstrap: [AppComponent],
 })
 export class AppModule {}

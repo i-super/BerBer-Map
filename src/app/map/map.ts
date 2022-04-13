@@ -76,7 +76,6 @@ export class MapComponent implements AfterViewInit, OnDestroy {
   }
 
   onMarkerClick(marker: any) {
-    console.log("Hey~ I'm Mark!", marker);
     this.matDialog.open(SpotInfoDialogComponent, {
       maxHeight: '100vh',
       maxWidth: '100vw',

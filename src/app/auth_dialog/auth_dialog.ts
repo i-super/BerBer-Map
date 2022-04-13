@@ -1,12 +1,12 @@
 import { Component, OnDestroy } from '@angular/core';
-import { MatSnackBar } from '@angular/material/snack-bar';
-import { MatDialogRef } from '@angular/material/dialog';
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import {
   GoogleAuthProvider,
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
   signInWithPopup,
 } from 'firebase/auth';
+import { ResetPasswordDialog } from '../reset_password_dialog/reset_password_dialog';
 
 import { auth } from '../firebase';
 
@@ -20,12 +20,13 @@ export class AuthDialog implements OnDestroy {
 
   email = '';
   password = '';
+  errorMsg?: string;
 
   loading = false;
 
   constructor(
     private readonly matDialogRef: MatDialogRef<AuthDialog>,
-    private readonly matSnackBar: MatSnackBar
+    private readonly matDialog: MatDialog
   ) {}
 
   ngOnDestroy() {}
@@ -43,11 +44,12 @@ export class AuthDialog implements OnDestroy {
   private async login() {
     if (this.loading) return;
     this.loading = true;
+    this.errorMsg = undefined;
     try {
       await signInWithEmailAndPassword(auth, this.email, this.password);
       this.matDialogRef.close();
     } catch (error) {
-      this.matSnackBar.open(`Login Error: ${error}`, 'Dismiss');
+      this.errorMsg = `${error}`;
     } finally {
       this.loading = false;
     }
@@ -56,24 +58,41 @@ export class AuthDialog implements OnDestroy {
   private async signUp() {
     if (this.loading) return;
     this.loading = true;
+    this.errorMsg = undefined;
+
     try {
       await createUserWithEmailAndPassword(auth, this.email, this.password);
       this.matDialogRef.close();
     } catch (error) {
-      this.matSnackBar.open(`Sign Up Error: ${error}`, 'Dismiss');
+      this.errorMsg = `${error}`;
     } finally {
       this.loading = false;
     }
   }
 
+  onClickForgotPassword() {
+    // pop up a dialog for users to enter their email.
+    this.matDialog.open(ResetPasswordDialog, {
+      maxHeight: '100vh',
+      maxWidth: '100vw',
+      data: this.email,
+    });
+  }
+
   async signInWithGoogle() {
     if (this.loading) return;
     this.loading = true;
+    this.errorMsg = undefined;
     try {
       await signInWithPopup(auth, new GoogleAuthProvider());
       this.matDialogRef.close();
     } catch (error) {
-      this.matSnackBar.open(`Sign in with Google Failed: ${error}`, 'Dismiss');
+      this.errorMsg = `${error}`;
+      if (this.errorMsg.includes('auth/popup-closed-by-user')) {
+        // User closed the popup, no need to show this error.
+        this.errorMsg = undefined;
+        return;
+      }
     } finally {
       this.loading = false;
     }
