@@ -3,11 +3,12 @@ import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 import { FirebaseService, SpotDB } from '../services/firebase_service';
 import { iconColorMap, iconLabelMap, loadingColorMap } from '../services/marker_icon';
 import { MatAutocompleteTrigger } from '@angular/material/autocomplete';
-import { MatDialogRef } from '@angular/material/dialog';
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Marker } from '../services/firebase_service';
 import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { resizeImg } from '../image_processing';
+import { ConfirmDialog } from '../confirm_dialog/confirm_dialog';
 import { NewSpotDialogComponent } from '../new_spot_dialog/new_spot_dialog';
 
 @Component({
@@ -68,7 +69,8 @@ export class NewSpotComponent implements OnInit {
     private readonly domSanitizer: DomSanitizer,
     private readonly firebaseService: FirebaseService,
     private readonly matDialogRef: MatDialogRef<NewSpotDialogComponent>,
-    private readonly matSnackBar: MatSnackBar
+    private readonly matSnackBar: MatSnackBar,
+    private readonly matDialog: MatDialog
   ) {
     this.filterTags();
   }
@@ -227,5 +229,20 @@ export class NewSpotComponent implements OnInit {
       .finally(() => {
         this.loading = false;
       });
+  }
+
+  deleteSpot() {
+    this.matDialog.open(ConfirmDialog, {
+      maxHeight: '100vh',
+      maxWidth: '100vw',
+      data: {
+        title: 'Are you sure you want to delete this spot?',
+        description: '',
+        confirmButtonText: 'Delete',
+        onConfirm: () => {
+          console.log('Delete!');
+        },
+      },
+    });
   }
 }

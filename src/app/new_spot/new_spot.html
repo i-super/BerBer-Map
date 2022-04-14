@@ -132,6 +132,17 @@
   <button class="save-button" mat-raised-button color="accent" (click)="onSave()">Save</button>
 </div>
 
+<button
+  *ngIf="edit"
+  class="delete-button"
+  mat-icon-button
+  matTooltip="Delete spot"
+  matTooltipPosition="left"
+  (click)="deleteSpot()"
+>
+  <mat-icon>delete_forever</mat-icon>
+</button>
+
 <!-- Loading -->
 <ngx-spinner
   bdColor="rgba(0, 0, 0, 0.2)"

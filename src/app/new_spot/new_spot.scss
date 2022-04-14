@@ -232,3 +232,25 @@ mat-form-field {
     }
   }
 }
+
+.delete-button {
+  position: absolute;
+  top: 30px;
+  right: 30px;
+  width: 36px;
+  height: 36px;
+  line-height: 36px;
+  mat-icon {
+    width: 30px;
+    height: 30px;
+    font-size: 30px;
+    line-height: 30px;
+    color: #fc9a7c;
+    transition: color 0.3s;
+  }
+  &:hover {
+    mat-icon {
+      color: #ff6f43;
+    }
+  }
+}
