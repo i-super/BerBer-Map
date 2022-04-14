@@ -62,4 +62,13 @@
       {{selectedTabIndex === 0 ? 'Login' : 'Sign up' }}
     </button>
   </div>
+
+  <ngx-spinner
+    bdColor="rgba(0, 0, 0, 0.2)"
+    size="medium"
+    color="#71b8f7"
+    type="ball-pulse"
+    [fullScreen]="false"
+    [showSpinner]="loading"
+  ></ngx-spinner>
 </div>

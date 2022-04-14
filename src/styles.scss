@@ -4,6 +4,7 @@
 // Plus imports for other components in your app.
 
 @import '~@angular/cdk/overlay-prebuilt.css';
+@import '~ngx-spinner/animations/ball-pulse.css';
 
 // Include the common styles for Angular Material. We include this here so that you only
 // have to load a single css file for Angular Material in your app.
@@ -135,6 +136,7 @@ body {
 }
 
 .dialog-wrapper {
+  position: relative;
   background: #f5f5f5;
   padding: 60px 32px;
   overflow: auto;

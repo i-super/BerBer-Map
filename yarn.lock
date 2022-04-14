@@ -5087,6 +5087,13 @@ ng-gallery@^6.0.1:
   dependencies:
     tslib "^2.0.0"
 
+ngx-spinner@^13.1.1:
+  version "13.1.1"
+  resolved "https://registry.yarnpkg.com/ngx-spinner/-/ngx-spinner-13.1.1.tgz#3dfd97644d051398a4707d6b69655e35036a5419"
+  integrity sha512-6aJz4KxIsBrlQckJxcM3CEvMcYbZoSDnQZPu0F/ZYAYunbBOTb9iydw0Gjczg9moum1VURWjX5dTVKmFo85c2Q==
+  dependencies:
+    tslib "^2.3.0"
+
 nice-napi@^1.0.2:
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/nice-napi/-/nice-napi-1.0.2.tgz#dc0ab5a1eac20ce548802fc5686eaa6bc654927b"

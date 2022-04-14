@@ -1,7 +1,7 @@
 import { Component, ElementRef, Inject, Input, OnInit, ViewChild } from '@angular/core';
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 import { FirebaseService, SpotDB } from '../services/firebase_service';
-import { iconColorMap, iconLabelMap } from '../services/marker_icon';
+import { iconColorMap, iconLabelMap, loadingColorMap } from '../services/marker_icon';
 import { MatAutocompleteTrigger } from '@angular/material/autocomplete';
 import { MatDialogRef } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
@@ -9,12 +9,6 @@ import { Marker } from '../services/firebase_service';
 import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { resizeImg } from '../image_processing';
 import { NewSpotDialogComponent } from '../new_spot_dialog/new_spot_dialog';
-
-interface Mark {
-  label: string;
-  icon: string;
-  color: string;
-}
 
 @Component({
   selector: 'new-spot',
@@ -67,6 +61,7 @@ export class NewSpotComponent implements OnInit {
   uploadImages: { previewURL?: SafeUrl; file?: File; storageURL?: string }[] = [];
 
   loading = false;
+  loadingColor = '';
 
   constructor(
     @Inject(MAT_DIALOG_DATA) public data: Marker,
@@ -203,6 +198,7 @@ export class NewSpotComponent implements OnInit {
     ) {
       return;
     }
+    this.loadingColor = loadingColorMap[this.selectedIcon];
     this.loading = true;
 
     this.firebaseService

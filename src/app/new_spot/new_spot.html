@@ -131,3 +131,13 @@
   <button class="cancel-button" mat-raised-button mat-dialog-close>Cancel</button>
   <button class="save-button" mat-raised-button color="accent" (click)="onSave()">Save</button>
 </div>
+
+<!-- Loading -->
+<ngx-spinner
+  bdColor="rgba(0, 0, 0, 0.2)"
+  size="medium"
+  [color]="loadingColor"
+  type="ball-pulse"
+  [fullScreen]="false"
+  [showSpinner]="loading"
+></ngx-spinner>

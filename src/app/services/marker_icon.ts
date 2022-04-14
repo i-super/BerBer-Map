@@ -13,3 +13,11 @@ export const iconLabelMap: {
   check_circle: 'Good',
   thumb_down: 'Naah',
 };
+
+export const loadingColorMap: {
+  [key: string]: string;
+} = {
+  favorite: '#ff9198',
+  check_circle: '#5eb0ef',
+  thumb_down: '#a5a5a5',
+};

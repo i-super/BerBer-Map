@@ -19,6 +19,7 @@ import { NgModule } from '@angular/core';
 
 import { GalleryModule } from 'ng-gallery';
 import { LightboxModule } from 'ng-gallery/lightbox';
+import { NgxSpinnerModule } from 'ngx-spinner';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -62,6 +63,7 @@ import { SpotInfoDialogComponent } from './spot_info/spot_info_dialog';
     MatProgressSpinnerModule,
     MatRadioModule,
     MatTooltipModule,
+    NgxSpinnerModule,
   ],
   providers: [
     {
