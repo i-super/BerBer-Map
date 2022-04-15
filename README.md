@@ -1,4 +1,9 @@
-# Berbermap
+<h1 align="center">Berbermap</h1>
+
+<p align="center">
+  <a href="https://app.netlify.com/sites/berbermap/deploys"><img src="https://api.netlify.com/api/v1/badges/5808e45a-5f56-4670-99c3-7d9f84859ffd/deploy-status" alt="Deploy Status"></a>
+  <a href="https://circleci.com/gh/ooxxro/berbermap/tree/main"><img src="https://img.shields.io/circleci/project/github/ooxxro/berbermap/main.svg?sanitize=true" alt="Test Status"></a>
+</p>
 
 This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 13.3.1.
 
