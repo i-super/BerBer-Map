@@ -14,4 +14,4 @@ jobs:
           paths:
             - 'node_modules'
       - run: yarn test --no-watch --no-progress --browsers=ChromeHeadlessCI
-      - run: yarn test:firebase --no-watch --no-progress --browsers=ChromeHeadlessCI
+      - run: yarn test:firebase
