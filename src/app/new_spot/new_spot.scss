@@ -39,6 +39,19 @@ mat-form-field {
   }
 }
 
+.address-buttons {
+  margin-left: 5px;
+  mat-icon {
+    color: #396fb0;
+    transition: color 0.3s;
+  }
+  &:hover {
+    mat-icon {
+      color: #2e4c6d;
+    }
+  }
+}
+
 .mat-radio-button {
   margin: 2px 40px 0 0;
 

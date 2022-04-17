@@ -5,8 +5,6 @@ import { iconColorMap, iconLabelMap, loadingColorMap } from '../services/marker_
 import { MatAutocompleteTrigger } from '@angular/material/autocomplete';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { Marker } from '../services/firebase_service';
-import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { resizeImg } from '../image_processing';
 import { ConfirmDialog } from '../confirm_dialog/confirm_dialog';
 import { NewSpotDialogComponent } from '../new_spot_dialog/new_spot_dialog';
@@ -28,6 +26,9 @@ export class NewSpotComponent implements OnInit {
   lat?: number;
   lng?: number;
   name = '';
+  address = '';
+  originalAddress = '';
+  editAddress = false;
 
   selectedCategory?: string;
   categories = ['Hike', 'Food', 'Accommodation'];
@@ -65,7 +66,6 @@ export class NewSpotComponent implements OnInit {
   loadingColor = '';
 
   constructor(
-    @Inject(MAT_DIALOG_DATA) public data: Marker,
     private readonly domSanitizer: DomSanitizer,
     private readonly firebaseService: FirebaseService,
     private readonly matDialogRef: MatDialogRef<NewSpotDialogComponent>,
@@ -89,6 +89,18 @@ export class NewSpotComponent implements OnInit {
     this.tags = new Set(spot.tags);
     this.notes = spot.notes;
     this.uploadImages = spot.images.map((img) => ({ storageURL: img }));
+    let geocoder = new google.maps.Geocoder();
+    geocoder
+      .geocode({ placeId: this.selectedPlaceId })
+      .then(({ results }) => {
+        if (results[0]) {
+          this.address = results[0].formatted_address;
+          this.originalAddress = this.address;
+        }
+      })
+      .catch((e) => {
+        console.error('Geocoder failed due to: ', e);
+      });
   }
 
   ngAfterViewInit() {
@@ -101,12 +113,16 @@ export class NewSpotComponent implements OnInit {
         this.selectedPlaceId = place.place_id;
         this.lat = place.geometry.location.lat();
         this.lng = place.geometry.location.lng();
-        this.name = place.name ?? '';
+        if (!this.edit) {
+          this.name = place.name ?? '';
+        }
       } else {
         this.selectedPlaceId = undefined;
         this.lat = undefined;
         this.lng = undefined;
-        this.name = '';
+        if (!this.edit) {
+          this.name = '';
+        }
       }
     });
   }
@@ -244,5 +260,19 @@ export class NewSpotComponent implements OnInit {
         },
       },
     });
+  }
+
+  changeAddress() {
+    this.editAddress = true;
+    const input = this.spotInput.nativeElement;
+    setTimeout(() => {
+      input.select();
+      input.focus();
+    }, 0);
+  }
+
+  cancelChangeAddress() {
+    this.editAddress = false;
+    this.address = this.originalAddress;
   }
 }

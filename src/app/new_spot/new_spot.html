@@ -1,9 +1,42 @@
 <!-- Spot -->
-<div class="row">
+<div *ngIf="!edit" class="row">
   <mat-form-field class="spot-container no-padding" appearance="outline">
     <mat-label>Spot</mat-label>
     <input #spotInput matInput placeholder="Ex. Yosemite" />
   </mat-form-field>
+</div>
+
+<div *ngIf="edit" class="row">
+  <mat-form-field class="spot-container no-padding" appearance="outline">
+    <mat-label>Spot</mat-label>
+    <input
+      #spotInput
+      matInput
+      [disabled]="!editAddress"
+      [autofocus]="!editAddress"
+      [(ngModel)]="address"
+    />
+  </mat-form-field>
+  <button
+    *ngIf="edit && !editAddress"
+    class="address-buttons"
+    mat-icon-button
+    matTooltip="Edit address"
+    matTooltipPosition="above"
+    (click)="changeAddress()"
+  >
+    <mat-icon>edit</mat-icon>
+  </button>
+  <button
+    *ngIf="edit && editAddress"
+    class="address-buttons"
+    mat-icon-button
+    matTooltip="Cancel"
+    matTooltipPosition="above"
+    (click)="cancelChangeAddress()"
+  >
+    <mat-icon>cancel</mat-icon>
+  </button>
 </div>
 
 <!-- Name -->
