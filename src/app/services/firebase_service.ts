@@ -177,13 +177,16 @@ export class FirebaseService implements OnDestroy {
     // before uploading images, and we'll remove the checkpoint when writing to
     // firestore, so we know if things fail half way.
     const checkpointCollection = collection(db, 'checkpoints', uid, 'createOrEditSpot');
-    const checkpoint = await addDoc(checkpointCollection, {
+    const checkpointData: { [key: string]: string | Date } = {
       spotId,
-      editingSpotId,
       placeId,
-      oldPlaceId: existingSpotData?.placeId,
       timestamp,
-    });
+    };
+    if (editingSpotId && existingSpotData) {
+      checkpointData['editingSpotId'] = editingSpotId;
+      checkpointData['oldPlaceId'] = existingSpotData.placeId;
+    }
+    const checkpoint = await addDoc(checkpointCollection, checkpointData);
 
     // Remove `existingSpotData.images` that are no longer in `images` from Storage.
     const storage = getStorage();
