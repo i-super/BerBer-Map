@@ -73,15 +73,15 @@ describe('Firebase secuirty rules', () => {
 
     it('Can only write to checkpoints/<uid> if uid matches', async () => {
       const db = getFirestore(myId);
-      // checkpoints/<uid>/createSpot/<checkpointId>/<checkpointData>
+      // checkpoints/<uid>/createOrEditSpot/<checkpointId>/<checkpointData>
       await assertSucceeds(
-        addDoc(collection(db, `/checkpoints/${myId}/createSpot`), {
+        addDoc(collection(db, `/checkpoints/${myId}/createOrEditSpot`), {
           placeId: 'xyz',
           timestamp: new Date(),
         })
       );
       await assertFails(
-        addDoc(collection(db, `/checkpoints/${theirId}/createSpot`), {
+        addDoc(collection(db, `/checkpoints/${theirId}/createOrEditSpot`), {
           placeId: 'xyz',
           timestamp: new Date(),
         })

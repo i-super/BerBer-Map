@@ -1,5 +1,10 @@
 <div class="dialog-wrapper">
-  <new-spot *ngIf="editMode; else viewModeTemplate" [edit]="true" [spotData]="data.spot"></new-spot>
+  <new-spot
+    *ngIf="editMode; else viewModeTemplate"
+    [edit]="true"
+    [spotData]="data.spot"
+    [spotId]="data.spotId"
+  ></new-spot>
   <ng-template #viewModeTemplate>
     <div class="spot-content">
       <div class="spot-title-wrapper">

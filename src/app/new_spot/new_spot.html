@@ -4,6 +4,13 @@
     <mat-label>Spot</mat-label>
     <input #spotInput matInput placeholder="Ex. Yosemite" />
   </mat-form-field>
+  <mat-icon
+    *ngIf="spotAlreadyExistWarning"
+    class="spot-exist-warning"
+    matTooltip="This spot already exist! Please update that spot instead of creating a new one here."
+  >
+    warning
+  </mat-icon>
 </div>
 
 <div *ngIf="edit" class="row">
@@ -37,6 +44,13 @@
   >
     <mat-icon>cancel</mat-icon>
   </button>
+  <mat-icon
+    *ngIf="spotAlreadyExistWarning"
+    class="spot-exist-warning"
+    matTooltip="This spot already exist! Please update that spot instead of creating a new one here."
+  >
+    warning
+  </mat-icon>
 </div>
 
 <!-- Name -->

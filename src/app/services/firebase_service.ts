@@ -11,6 +11,8 @@ import {
   getDoc,
   DocumentSnapshot,
   arrayRemove,
+  query,
+  where,
 } from 'firebase/firestore';
 import { DocumentReference } from 'firebase/firestore/lite';
 import { deleteObject, getDownloadURL, getStorage, ref, uploadBytes } from 'firebase/storage';
@@ -20,7 +22,7 @@ import { auth, db } from '../firebase';
 import { iconColorMap } from './marker_icon';
 
 interface CreateSpotParams {
-  edit: boolean;
+  editingSpotId?: string;
   placeId: string;
   name: string;
   lat: number;
@@ -58,6 +60,7 @@ interface TagDB {
 export interface Marker {
   position: google.maps.LatLngLiteral;
   options: google.maps.MarkerOptions;
+  spotId: string;
   spot: SpotDB;
 }
 
@@ -115,13 +118,14 @@ export class FirebaseService implements OnDestroy {
             labelOrigin: new google.maps.Point(12, 15),
           },
         },
+        spotId: doc.id,
         spot,
       });
     });
   }
 
-  async createSpot({
-    edit,
+  async createOrEditSpot({
+    editingSpotId,
     placeId,
     name,
     lat,
@@ -132,30 +136,93 @@ export class FirebaseService implements OnDestroy {
     notes,
     images,
   }: CreateSpotParams) {
-    if (edit) {
-      throw new Error('Unimplemented.');
-    }
     if (!this.currentUser) {
-      throw new Error('Cannot createSpot without logged in user.');
+      throw new Error('Cannot createOrEditSpot without logged in user.');
     }
     const uid = this.currentUser.uid;
     const timestamp = new Date();
-    // Write to /checkpoints/<uid>/createSpot/<checkpointId>/<checkpointData>
+    const userRef = doc(db, 'users', uid);
+    const userSpotsCollection = collection(userRef, 'spots') as CollectionReference<SpotDB>;
+
+    let spotId: string;
+    let spotRef: DocumentReference<SpotDB>;
+    let existingSpotData: SpotDB | undefined;
+    if (editingSpotId) {
+      // Editing an existing spot.
+      spotId = editingSpotId;
+      spotRef = doc(userRef, 'spots', spotId) as DocumentReference<SpotDB>;
+      const existingSpotSnapshot = (await getDoc(spotRef)) as DocumentSnapshot<SpotDB>;
+      if (!existingSpotSnapshot.exists()) {
+        throw new Error(`Editing spot but the spot data does not exist. Spot id: ${spotId}`);
+      }
+      existingSpotData = existingSpotSnapshot.data();
+    } else {
+      // Creating a new spot.
+      spotRef = doc<SpotDB>(userSpotsCollection);
+      spotId = spotRef.id;
+    }
+
+    // Check if the placeId already exist, we do not allow duplicated placeIds.
+    // Only need to check if we're in create mode,
+    // or if the user is changing placeId in edit mode.
+    if (!editingSpotId || existingSpotData?.placeId !== placeId) {
+      const q = query(userSpotsCollection, where('placeId', '==', placeId));
+      const querySnapshot = await getDocs(q);
+      if (querySnapshot.docs.some((doc) => doc.id !== spotId)) {
+        throw new Error(`The place ID ${placeId} already exist.`);
+      }
+    }
+
+    // Write to /checkpoints/<uid>/createOrEditSpot/<checkpointId>/<checkpointData>
     // before uploading images, and we'll remove the checkpoint when writing to
     // firestore, so we know if things fail half way.
-    const checkpointCollection = collection(db, 'checkpoints', uid, 'createSpot');
+    const checkpointCollection = collection(db, 'checkpoints', uid, 'createOrEditSpot');
     const checkpoint = await addDoc(checkpointCollection, {
+      spotId,
+      editingSpotId,
       placeId,
+      oldPlaceId: existingSpotData?.placeId,
       timestamp,
     });
 
-    // Store images to Firebase Storage.
+    // Remove `existingSpotData.images` that are no longer in `images` from Storage.
     const storage = getStorage();
-    const promises: Array<Promise<{ url: string; storagePath: string }>> = [];
+    const removeImagePromises: Promise<void>[] = [];
+    if (existingSpotData) {
+      for (const oldImage of existingSpotData.images) {
+        if (!images.find((image) => image.storedImage?.storagePath === oldImage.storagePath)) {
+          // Remove oldImage.
+          const storageRef = ref(storage, oldImage.storagePath);
+          const promise = deleteObject(storageRef).catch((error) => {
+            if (`${error}`.includes('(storage/object-not-found)')) {
+              // This image is already deleted, no need to throw.
+              return;
+            } else {
+              // Otherwise throw.
+              throw error;
+            }
+          });
+          removeImagePromises.push(promise);
+        }
+      }
+    }
+    // Store new images to Firebase Storage.
+    const uploadImagePromises: Promise<void>[] = [];
     const imageIds = new Set<string>();
+    if (existingSpotData) {
+      // To avoid conflict image name, seed the set with existing image names.
+      for (const image of existingSpotData.images) {
+        const parts = image.storagePath.split('/');
+        const fileName = parts[parts.length - 1];
+        const png = '.png';
+        if (fileName && fileName.endsWith(png)) {
+          imageIds.add(fileName.substring(0, fileName.length - png.length));
+        }
+      }
+    }
+    // Upload new images.
     for (const image of images) {
       if (!image.file) continue;
-
       let imageId = `${Math.floor(Math.random() * 10000000)}`;
       while (imageIds.has(imageId)) {
         imageId = `${Math.floor(Math.random() * 10000000)}`;
@@ -164,58 +231,68 @@ export class FirebaseService implements OnDestroy {
       const storagePath = `/users/${uid}/spots/${placeId}/${imageId}.png`;
       const storageRef = ref(storage, storagePath);
       const promise = uploadBytes(storageRef, image.file)
-        .then((uploadResult) => {
-          return getDownloadURL(uploadResult.ref);
-        })
-        .then((url) => ({
-          url,
-          storagePath,
-        }));
-      promises.push(promise);
+        .then((uploadResult) => getDownloadURL(uploadResult.ref))
+        .then((url) => {
+          // After done uploading, update the images array with the storedImage.
+          image.storedImage = { url, storagePath };
+        });
+      uploadImagePromises.push(promise);
     }
 
+    // Wait for all Storage operations to finish before updating Firestore.
+    await Promise.all([...removeImagePromises, ...uploadImagePromises]);
+
+    // Check that all the images have storedImage field set.
+    if (images.some((image) => !image.storedImage)) {
+      console.error(images);
+      throw new Error(
+        'Storage (remove or upload images) done, but some image in images array still have empty storedImage field.'
+      );
+    }
     // We need to write spots, tags, etc. in "batch" atomically.
     const batch = writeBatch(db);
-    const userRef = doc(db, 'users', uid);
-    const spotRef = doc(userRef, 'spots', placeId) as DocumentReference<SpotDB>;
-    return Promise.all(promises).then((uploadedImages) => {
-      // Spot data.
-      batch.set(
-        spotRef,
-        {
-          placeId,
-          createdAt: timestamp,
-          updatedAt: timestamp,
-          name,
-          lat,
-          lng,
-          category,
-          icon,
-          tags,
-          notes,
-          images: uploadedImages,
-        },
-        { merge: true }
-      );
-      // Tags data.
-      for (const tag of tags) {
-        const tagsRef = doc(userRef, 'tags', tag) as DocumentReference<TagDB>;
-        batch.set(
-          tagsRef,
-          {
-            spots: arrayUnion(placeId),
-          },
-          { merge: true }
-        );
+    // Spot data.
+    const spotDocToWrite: Partial<SpotDB> = {
+      placeId,
+      updatedAt: timestamp,
+      name,
+      lat,
+      lng,
+      category,
+      icon,
+      tags,
+      notes,
+      images: images
+        .map((image) => image.storedImage)
+        .filter((image): image is SpotImage => !!image),
+    };
+    if (!existingSpotData) {
+      spotDocToWrite.createdAt = timestamp;
+    }
+    batch.set(spotRef, spotDocToWrite, { merge: true });
+    // Tags to add.
+    for (const tag of tags) {
+      const tagsRef = doc(userRef, 'tags', tag) as DocumentReference<TagDB>;
+      batch.set(tagsRef, { spots: arrayUnion(spotId) }, { merge: true });
+    }
+    if (existingSpotData) {
+      // Tags to remove.
+      const tagsSet = new Set<string>(tags);
+      for (const tag of existingSpotData.tags) {
+        if (!tagsSet.has(tag)) {
+          const tagsRef = doc(userRef, 'tags', tag) as DocumentReference<TagDB>;
+          batch.set(tagsRef, { spots: arrayRemove(spotId) }, { merge: true });
+        }
       }
-      // Also remove the checkpoint as part of this batch write.
-      batch.delete(doc(checkpointCollection, checkpoint.id));
+    }
 
-      return batch.commit();
-    });
+    // Also remove the checkpoint as part of this batch write.
+    batch.delete(doc(checkpointCollection, checkpoint.id));
+    // Finally commit the batch.
+    await batch.commit();
   }
 
-  async deleteSpot(placeId: string) {
+  async deleteSpot(spotId: string) {
     if (!this.currentUser) {
       throw new Error('Cannot deleteSpot without logged in user.');
     }
@@ -223,10 +300,10 @@ export class FirebaseService implements OnDestroy {
 
     // Get the list of images.
     const userRef = doc(db, 'users', uid);
-    const spotRef = doc(userRef, 'spots', placeId) as DocumentReference<SpotDB>;
+    const spotRef = doc(userRef, 'spots', spotId) as DocumentReference<SpotDB>;
     const spotSnapshot = (await getDoc(spotRef)) as DocumentSnapshot<SpotDB>;
     if (!spotSnapshot.exists()) {
-      throw new Error(`The place ID ${placeId} you are trying to delete does not exist`);
+      throw new Error(`The spot ID ${spotId} you are trying to delete does not exist`);
     }
     const spotDoc = spotSnapshot.data();
 
@@ -234,7 +311,6 @@ export class FirebaseService implements OnDestroy {
     const storage = getStorage();
     const promises: Promise<void>[] = [];
     for (const image of spotDoc.images) {
-      // Upload images to storage at /users/<uid>/spots/<spotId>/<imageId>.png
       const storageRef = ref(storage, image.storagePath);
       const promise = deleteObject(storageRef).catch((error) => {
         if (`${error}`.includes('(storage/object-not-found)')) {
@@ -256,13 +332,7 @@ export class FirebaseService implements OnDestroy {
       // Tags data.
       for (const tag of spotDoc.tags) {
         const tagsRef = doc(userRef, 'tags', tag) as DocumentReference<TagDB>;
-        batch.set(
-          tagsRef,
-          {
-            spots: arrayRemove(placeId),
-          },
-          { merge: true }
-        );
+        batch.set(tagsRef, { spots: arrayRemove(spotId) }, { merge: true });
       }
 
       return batch.commit();

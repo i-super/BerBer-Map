@@ -8,6 +8,8 @@ describe('FirebaseService', () => {
   });
 
   it('dummy test', () => {
-    expect(firebaseService.createSpot).toBeTruthy();
+    // TODO: Ideally we can test firebase operations with the emulator.
+    // But the emulator doesn't work with Karma so will need some setup work.
+    expect(firebaseService.createOrEditSpot).toBeTruthy();
   });
 });

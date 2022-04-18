@@ -18,12 +18,15 @@ import { NewSpotDialogComponent } from '../new_spot_dialog/new_spot_dialog';
 export class NewSpotComponent implements OnInit {
   @Input() edit = false;
   @Input() spotData?: SpotDB;
+  @Input() spotId?: string;
+
   @ViewChild('spotInput') spotInput!: ElementRef;
   @ViewChild('tagInput', { read: MatAutocompleteTrigger })
   tagInput!: MatAutocompleteTrigger;
 
   placesAutocomplete!: google.maps.places.Autocomplete;
   selectedPlaceId?: string;
+  spotAlreadyExistWarning = false;
   lat?: number;
   lng?: number;
   name = '';
@@ -102,7 +105,7 @@ export class NewSpotComponent implements OnInit {
         }
       })
       .catch((e) => {
-        console.error('Geocoder failed due to: ', e);
+        this.errorMsg = `Geocoder failed when looking up address: ${e}`;
       });
   }
 
@@ -119,7 +122,18 @@ export class NewSpotComponent implements OnInit {
         if (!this.edit) {
           this.name = place.name ?? '';
         }
+
+        // Show a warning if this placeID already exist.
+        if (
+          this.spotData?.placeId !== place.place_id &&
+          this.firebaseService.markers.find((marker) => marker.spot.placeId === place.place_id)
+        ) {
+          this.spotAlreadyExistWarning = true;
+        } else {
+          this.spotAlreadyExistWarning = false;
+        }
       } else {
+        this.spotAlreadyExistWarning = false;
         this.selectedPlaceId = undefined;
         this.lat = undefined;
         this.lng = undefined;
@@ -208,15 +222,23 @@ export class NewSpotComponent implements OnInit {
   }
 
   onSave(): void {
-    if (
-      this.loading ||
-      this.lat === undefined ||
-      this.lng === undefined ||
-      !this.selectedPlaceId ||
-      !this.selectedCategory ||
-      !this.selectedIcon ||
-      !this.name
-    ) {
+    if (this.loading) {
+      return;
+    }
+    if (!this.name) {
+      this.errorMsg = 'Name is required';
+      return;
+    }
+    if (!this.selectedPlaceId || this.lat === undefined || this.lng === undefined) {
+      this.errorMsg = 'No Spot (or latitude/longitude) selected';
+      return;
+    }
+    if (!this.selectedCategory) {
+      this.errorMsg = 'Category is required';
+      return;
+    }
+    if (!this.selectedIcon) {
+      this.errorMsg = 'Mark is required';
       return;
     }
     this.loadingColor = loadingColorMap[this.selectedIcon];
@@ -224,8 +246,8 @@ export class NewSpotComponent implements OnInit {
     this.errorMsg = '';
 
     this.firebaseService
-      .createSpot({
-        edit: this.edit,
+      .createOrEditSpot({
+        editingSpotId: this.spotId,
         placeId: this.selectedPlaceId,
         name: this.name,
         lat: this.lat,
@@ -252,7 +274,7 @@ export class NewSpotComponent implements OnInit {
   }
 
   deleteSpot() {
-    if (!this.spotData || this.loading) return;
+    if (!this.spotData || !this.spotId || this.loading) return;
     this.errorMsg = '';
     this.loadingColor = loadingColorMap[this.spotData.icon];
 
@@ -264,10 +286,10 @@ export class NewSpotComponent implements OnInit {
         description: 'This is permanent and cannot be undone.',
         confirmButtonText: 'Delete',
         onConfirm: () => {
-          if (!this.spotData || this.loading) return;
+          if (!this.spotData || !this.spotId || this.loading) return;
           this.loading = true;
           this.firebaseService
-            .deleteSpot(this.spotData.placeId)
+            .deleteSpot(this.spotId)
             .then(() => {
               this.matDialogRef.close();
               this.firebaseService.fetchSpots();
@@ -295,5 +317,8 @@ export class NewSpotComponent implements OnInit {
   cancelChangeAddress() {
     this.editAddress = false;
     this.address = this.originalAddress;
+    this.selectedPlaceId = this.spotData?.placeId;
+    this.lat = this.spotData?.lat;
+    this.lng = this.spotData?.lng;
   }
 }
