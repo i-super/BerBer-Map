@@ -1,10 +1,11 @@
-import { Component, ElementRef, Inject, Input, OnInit, ViewChild } from '@angular/core';
+import { Component, ElementRef, Input, OnInit, ViewChild } from '@angular/core';
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
-import { FirebaseService, SpotDB } from '../services/firebase_service';
-import { iconColorMap, iconLabelMap, loadingColorMap } from '../services/marker_icon';
 import { MatAutocompleteTrigger } from '@angular/material/autocomplete';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
+
+import { FirebaseService, SpotDB, SpotImage } from '../services/firebase_service';
+import { iconColorMap, iconLabelMap, loadingColorMap } from '../services/marker_icon';
 import { resizeImg } from '../image_processing';
 import { ConfirmDialog } from '../confirm_dialog/confirm_dialog';
 import { NewSpotDialogComponent } from '../new_spot_dialog/new_spot_dialog';
@@ -58,12 +59,14 @@ export class NewSpotComponent implements OnInit {
   ];
   filteredTagOptions: string[] = [];
   notes = '';
-  // Selecting a new file will populate only previewURL and file (storageURL will be undefined);
-  // Already uploaded file will only populate storageURL(previewURL and file will be undefined).
-  uploadImages: { previewURL?: SafeUrl; file?: File; storageURL?: string }[] = [];
+  // Selecting a new file will populate only previewURL and file (storedImage will be undefined);
+  // Already uploaded file will only populate storedImage(previewURL and file will be undefined).
+  uploadImages: { previewURL?: SafeUrl; file?: File; storedImage?: SpotImage }[] = [];
 
   loading = false;
   loadingColor = '';
+
+  errorMsg = '';
 
   constructor(
     private readonly domSanitizer: DomSanitizer,
@@ -88,7 +91,7 @@ export class NewSpotComponent implements OnInit {
     this.selectedIcon = spot.icon;
     this.tags = new Set(spot.tags);
     this.notes = spot.notes;
-    this.uploadImages = spot.images.map((img) => ({ storageURL: img }));
+    this.uploadImages = spot.images.map((img) => ({ storedImage: img }));
     let geocoder = new google.maps.Geocoder();
     geocoder
       .geocode({ placeId: this.selectedPlaceId })
@@ -218,6 +221,7 @@ export class NewSpotComponent implements OnInit {
     }
     this.loadingColor = loadingColorMap[this.selectedIcon];
     this.loading = true;
+    this.errorMsg = '';
 
     this.firebaseService
       .createSpot({
@@ -232,7 +236,7 @@ export class NewSpotComponent implements OnInit {
         notes: this.notes,
         images: this.uploadImages.map((image) => ({
           file: image.file,
-          storageURL: image.storageURL,
+          storedImage: image.storedImage,
         })),
       })
       .then(() => {
@@ -240,7 +244,7 @@ export class NewSpotComponent implements OnInit {
         this.firebaseService.fetchSpots();
       })
       .catch((error) => {
-        console.error(error);
+        this.errorMsg = `Error saving spot: ${error}`;
       })
       .finally(() => {
         this.loading = false;
@@ -248,15 +252,32 @@ export class NewSpotComponent implements OnInit {
   }
 
   deleteSpot() {
+    if (!this.spotData || this.loading) return;
+    this.errorMsg = '';
+    this.loadingColor = loadingColorMap[this.spotData.icon];
+
     this.matDialog.open(ConfirmDialog, {
       maxHeight: '100vh',
       maxWidth: '100vw',
       data: {
         title: 'Are you sure you want to delete this spot?',
-        description: '',
+        description: 'This is permanent and cannot be undone.',
         confirmButtonText: 'Delete',
         onConfirm: () => {
-          console.log('Delete!');
+          if (!this.spotData || this.loading) return;
+          this.loading = true;
+          this.firebaseService
+            .deleteSpot(this.spotData.placeId)
+            .then(() => {
+              this.matDialogRef.close();
+              this.firebaseService.fetchSpots();
+            })
+            .catch((error) => {
+              this.errorMsg = `Error deleting spot: ${error}`;
+            })
+            .finally(() => {
+              this.loading = false;
+            });
         },
       },
     });

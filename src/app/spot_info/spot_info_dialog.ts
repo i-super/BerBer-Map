@@ -41,7 +41,9 @@ export class SpotInfoDialogComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     // Load items into gallery
-    const items = this.data.spot.images.map((item) => new ImageItem({ src: item, thumb: item }));
+    const items = this.data.spot.images.map(
+      (image) => new ImageItem({ src: image.url, thumb: image.url })
+    );
     this.gallery.ref(LIGHTBOX_ID).load(items);
   }
 

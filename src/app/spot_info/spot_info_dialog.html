@@ -33,7 +33,7 @@
           [class.dragging]="imagePointerStartPos"
           [style.transform]="getImageTransform(i)"
         >
-          <img [src]="image" />
+          <img [src]="image.url" />
         </div>
         <button
           *ngIf="currentImageIndex !== 0"

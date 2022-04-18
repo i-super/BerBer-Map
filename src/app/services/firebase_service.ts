@@ -8,9 +8,12 @@ import {
   getDocs,
   CollectionReference,
   addDoc,
+  getDoc,
+  DocumentSnapshot,
+  arrayRemove,
 } from 'firebase/firestore';
 import { DocumentReference } from 'firebase/firestore/lite';
-import { getDownloadURL, getStorage, ref, uploadBytes } from 'firebase/storage';
+import { deleteObject, getDownloadURL, getStorage, ref, uploadBytes } from 'firebase/storage';
 import { Subject } from 'rxjs';
 
 import { auth, db } from '../firebase';
@@ -26,7 +29,7 @@ interface CreateSpotParams {
   icon: string;
   tags: string[];
   notes: string;
-  images: { file?: File; storageURL?: string }[];
+  images: { file?: File; storedImage?: SpotImage }[];
 }
 
 export interface SpotDB {
@@ -40,7 +43,12 @@ export interface SpotDB {
   icon: string;
   tags: string[];
   notes: string;
-  images: string[];
+  images: SpotImage[];
+}
+
+export interface SpotImage {
+  url: string;
+  storagePath: string;
 }
 
 interface TagDB {
@@ -143,7 +151,7 @@ export class FirebaseService implements OnDestroy {
 
     // Store images to Firebase Storage.
     const storage = getStorage();
-    const promises: Array<Promise<string>> = [];
+    const promises: Array<Promise<{ url: string; storagePath: string }>> = [];
     const imageIds = new Set<string>();
     for (const image of images) {
       if (!image.file) continue;
@@ -155,9 +163,14 @@ export class FirebaseService implements OnDestroy {
       // Upload images to storage at /users/<uid>/spots/<spotId>/<imageId>.png
       const storagePath = `/users/${uid}/spots/${placeId}/${imageId}.png`;
       const storageRef = ref(storage, storagePath);
-      const promise = uploadBytes(storageRef, image.file).then((uploadResult) => {
-        return getDownloadURL(uploadResult.ref);
-      });
+      const promise = uploadBytes(storageRef, image.file)
+        .then((uploadResult) => {
+          return getDownloadURL(uploadResult.ref);
+        })
+        .then((url) => ({
+          url,
+          storagePath,
+        }));
       promises.push(promise);
     }
 
@@ -197,6 +210,60 @@ export class FirebaseService implements OnDestroy {
       }
       // Also remove the checkpoint as part of this batch write.
       batch.delete(doc(checkpointCollection, checkpoint.id));
+
+      return batch.commit();
+    });
+  }
+
+  async deleteSpot(placeId: string) {
+    if (!this.currentUser) {
+      throw new Error('Cannot deleteSpot without logged in user.');
+    }
+    const uid = this.currentUser.uid;
+
+    // Get the list of images.
+    const userRef = doc(db, 'users', uid);
+    const spotRef = doc(userRef, 'spots', placeId) as DocumentReference<SpotDB>;
+    const spotSnapshot = (await getDoc(spotRef)) as DocumentSnapshot<SpotDB>;
+    if (!spotSnapshot.exists()) {
+      throw new Error(`The place ID ${placeId} you are trying to delete does not exist`);
+    }
+    const spotDoc = spotSnapshot.data();
+
+    // Remove images in Firebase Storage first.
+    const storage = getStorage();
+    const promises: Promise<void>[] = [];
+    for (const image of spotDoc.images) {
+      // Upload images to storage at /users/<uid>/spots/<spotId>/<imageId>.png
+      const storageRef = ref(storage, image.storagePath);
+      const promise = deleteObject(storageRef).catch((error) => {
+        if (`${error}`.includes('(storage/object-not-found)')) {
+          // This image is already deleted, no need to throw.
+          return;
+        } else {
+          // Otherwise throw.
+          throw error;
+        }
+      });
+      promises.push(promise);
+    }
+
+    // We need to write spots, tags, etc. in "batch" atomically.
+    const batch = writeBatch(db);
+    return Promise.all(promises).then(() => {
+      // Spot data.
+      batch.delete(spotRef);
+      // Tags data.
+      for (const tag of spotDoc.tags) {
+        const tagsRef = doc(userRef, 'tags', tag) as DocumentReference<TagDB>;
+        batch.set(
+          tagsRef,
+          {
+            spots: arrayRemove(placeId),
+          },
+          { merge: true }
+        );
+      }
 
       return batch.commit();
     });

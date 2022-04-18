@@ -117,7 +117,7 @@
 <div class="row title">Images</div>
 <div class="row image-row">
   <div *ngFor="let image of uploadImages; let i = index" class="image-wrapper">
-    <img [src]="image.storageURL || image.previewURL" />
+    <img [src]="image.storedImage?.url || image.previewURL" />
     <button
       class="remove-image-button"
       mat-icon-button
@@ -158,6 +158,8 @@
     <span>Add Photo</span>
   </div>
 </div>
+
+<div *ngIf="errorMsg" class="error">{{errorMsg}}</div>
 
 <!-- Save and cancel button -->
 <div class="row button-row" mat-dialog-actions>

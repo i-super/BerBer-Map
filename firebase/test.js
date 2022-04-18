@@ -5,7 +5,7 @@ const {
 } = require('@firebase/rules-unit-testing');
 const fs = require('fs');
 const { getDoc, doc, setDoc, addDoc, collection } = require('firebase/firestore');
-const { getDownloadURL, ref, uploadBytes } = require('firebase/storage');
+const { getDownloadURL, ref, uploadBytes, deleteObject } = require('firebase/storage');
 
 const myId = 'my-uid';
 const theirId = 'their-uid';
@@ -115,6 +115,12 @@ describe('Firebase secuirty rules', () => {
           contentType: 'image/png',
         })
       );
+    });
+
+    it('Can only delete file to /<uid>/spots if uid matches', async () => {
+      const storage = getStorage(myId);
+      await assertSucceeds(deleteObject(ref(storage, `/users/${myId}/spots/xyz/456.png`)));
+      await assertFails(deleteObject(ref(storage, `/users/${theirId}/spots/xyz/456.png`)));
     });
 
     it('Rejects if file size or type is wrong', async () => {
