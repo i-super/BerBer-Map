@@ -74,6 +74,15 @@
           <div class="note-content">{{data.spot.notes}}</div>
         </div>
       </div>
+
+      <a
+        [href]="'https://www.google.com/maps/place/?q=place_id:' + data.spot.placeId"
+        class="google-map-link"
+        target="_blank"
+        matTooltip="Open with Google Maps in a new tab."
+      >
+        <img src="images/google-maps-icon.svg" alt="google maps" />
+      </a>
     </div>
 
     <button
