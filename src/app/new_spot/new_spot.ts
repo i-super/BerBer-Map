@@ -261,14 +261,24 @@ export class NewSpotComponent implements OnInit {
           storedImage: image.storedImage,
         })),
       })
-      .then(() => {
+      .then(async () => {
         this.matDialogRef.close();
-        this.firebaseService.fetchSpots();
+        this.loading = false;
+        await this.firebaseService.fetchSpots();
+        const spotMarker = this.firebaseService.markers.find(
+          (marker) => marker.spot.placeId === this.selectedPlaceId
+        );
+        if (spotMarker) {
+          this.firebaseService.openSpotInfoDialog(spotMarker);
+          const pos = {
+            lat: spotMarker.spot.lat,
+            lng: spotMarker.spot.lng,
+          };
+          this.firebaseService.panTo(pos);
+        }
       })
       .catch((error) => {
         this.errorMsg = `Error saving spot: ${error}`;
-      })
-      .finally(() => {
         this.loading = false;
       });
   }

@@ -20,6 +20,8 @@ import { Subject } from 'rxjs';
 
 import { auth, db } from '../firebase';
 import { iconColorMap } from './marker_icon';
+import { SpotInfoDialogComponent } from '../spot_info/spot_info_dialog';
+import { MatDialog } from '@angular/material/dialog';
 
 interface CreateSpotParams {
   editingSpotId?: string;
@@ -64,17 +66,23 @@ export interface Marker {
   spot: SpotDB;
 }
 
+export interface Pos {
+  lat: number;
+  lng: number;
+}
+
 @Injectable({ providedIn: 'root' })
 export class FirebaseService implements OnDestroy {
   // https://firebase.google.com/docs/reference/js/firebase.User
   currentUser: User | null = null;
 
   readonly authReady = new Subject<void>();
+  readonly panToSubject = new Subject<Pos>();
 
   spots: SpotDB[] = [];
   markers: Marker[] = [];
 
-  constructor() {
+  constructor(private readonly matDialog: MatDialog) {
     onAuthStateChanged(auth, (user) => {
       this.currentUser = user;
       this.authReady.next();
@@ -83,6 +91,7 @@ export class FirebaseService implements OnDestroy {
 
   ngOnDestroy() {
     this.authReady.complete();
+    this.panToSubject.complete();
   }
 
   async fetchSpots() {
@@ -340,5 +349,18 @@ export class FirebaseService implements OnDestroy {
 
       return batch.commit();
     });
+  }
+
+  openSpotInfoDialog(marker: Marker) {
+    this.matDialog.open(SpotInfoDialogComponent, {
+      maxHeight: '100vh',
+      maxWidth: '100vw',
+      data: marker,
+      autoFocus: false,
+    });
+  }
+
+  panTo(pos: Pos) {
+    this.panToSubject.next(pos);
   }
 }

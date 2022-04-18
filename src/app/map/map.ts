@@ -1,10 +1,8 @@
 import { AfterViewInit, Component, ElementRef, OnDestroy, ViewChild } from '@angular/core';
 import { GoogleMap } from '@angular/google-maps';
 import { ReplaySubject, takeUntil } from 'rxjs';
-import { FirebaseService } from '../services/firebase_service';
+import { FirebaseService, Marker } from '../services/firebase_service';
 import { mapStyle } from './map_style';
-import { MatDialog } from '@angular/material/dialog';
-import { SpotInfoDialogComponent } from '../spot_info/spot_info_dialog';
 
 @Component({
   selector: 'map',
@@ -32,9 +30,12 @@ export class MapComponent implements AfterViewInit, OnDestroy {
 
   private readonly destroyed = new ReplaySubject<void>(1);
 
-  constructor(readonly firebaseService: FirebaseService, private readonly matDialog: MatDialog) {
+  constructor(readonly firebaseService: FirebaseService) {
     this.firebaseService.authReady.pipe(takeUntil(this.destroyed)).subscribe(() => {
       this.firebaseService.fetchSpots();
+    });
+    this.firebaseService.panToSubject.pipe(takeUntil(this.destroyed)).subscribe((pos) => {
+      this.map.panTo(pos);
     });
   }
 
@@ -75,12 +76,7 @@ export class MapComponent implements AfterViewInit, OnDestroy {
     }
   }
 
-  onMarkerClick(marker: any) {
-    this.matDialog.open(SpotInfoDialogComponent, {
-      maxHeight: '100vh',
-      maxWidth: '100vw',
-      data: marker,
-      autoFocus: false,
-    });
+  onMarkerClick(marker: Marker) {
+    this.firebaseService.openSpotInfoDialog(marker);
   }
 }
