@@ -11,6 +11,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatRadioModule } from '@angular/material/radio';
+import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatSliderModule } from '@angular/material/slider';
 import { MatSnackBarModule, MAT_SNACK_BAR_DEFAULT_OPTIONS } from '@angular/material/snack-bar';
 import { MatTabsModule } from '@angular/material/tabs';
@@ -25,6 +26,7 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { AuthDialog } from './auth_dialog/auth_dialog';
 import { ConfirmDialog } from './confirm_dialog/confirm_dialog';
+import { ListViewComponent } from './list_view/list_view';
 import { MapComponent } from './map/map';
 import { NewSpotComponent } from './new_spot/new_spot';
 import { NewSpotDialogComponent } from './new_spot_dialog/new_spot_dialog';
@@ -36,6 +38,7 @@ import { SpotInfoDialogComponent } from './spot_info/spot_info_dialog';
     AuthDialog,
     AppComponent,
     ConfirmDialog,
+    ListViewComponent,
     MapComponent,
     NewSpotComponent,
     NewSpotDialogComponent,
@@ -59,6 +62,7 @@ import { SpotInfoDialogComponent } from './spot_info/spot_info_dialog';
     MatIconModule,
     MatInputModule,
     MatMenuModule,
+    MatSidenavModule,
     MatSliderModule,
     MatSnackBarModule,
     MatTabsModule,

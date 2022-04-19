@@ -1,10 +1,10 @@
-.main {
+.drawer-container {
   height: 100%;
   width: 100%;
 }
 
 .top-right-buttons {
-  position: fixed;
+  position: absolute;
   top: 30px;
   right: 40px;
   z-index: 1;
@@ -14,6 +14,25 @@
   & > *:not(:first-child) {
     margin-top: 16px;
   }
+}
+
+.top-left-buttons {
+  position: absolute;
+  top: 30px;
+  left: 40px;
+  z-index: 1;
+
+  & > *:not(:first-child) {
+    margin-left: 16px;
+  }
+}
+
+button {
+  transition: background 0.3s;
+
+  &:hover {
+    background: #2e4c6d;
+  }
 
   mat-icon {
     $size: 36px;
@@ -21,12 +40,5 @@
     width: $size;
     height: $size;
     color: white;
-  }
-}
-
-.add-new-button {
-  transition: background 0.3s;
-  &:hover {
-    background: #2e4c6d;
   }
 }

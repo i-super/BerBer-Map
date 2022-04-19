@@ -18,5 +18,13 @@ google-map {
 
   &:hover {
     background: #ebebeb;
+
+    mat-icon {
+      color: #2e4c6d;
+    }
+  }
+
+  mat-icon {
+    color: #396fb0;
   }
 }

@@ -1,44 +1,74 @@
-<div class="main">
-  <div class="top-right-buttons">
-    <ng-container *ngIf="firebaseService.currentUser as user; else showLogin">
+<mat-drawer-container class="drawer-container" autosize hasBackdrop="false">
+  <mat-drawer #drawer class="drawer-content" mode="side">
+    <list-view></list-view>
+  </mat-drawer>
+
+  <mat-drawer-content>
+    <div class="top-right-buttons">
+      <ng-container *ngIf="firebaseService.currentUser as user; else showLogin">
+        <button
+          mat-fab
+          [matTooltip]="user.displayName ?? user.email ?? 'TODO'"
+          matTooltipPosition="left"
+          [matMenuTriggerFor]="userMenu"
+        >
+          <mat-icon>face</mat-icon>
+        </button>
+        <mat-menu #userMenu="matMenu">
+          <ng-template matMenuContent>
+            <button mat-menu-item (click)="auth.signOut()">Log out</button>
+          </ng-template>
+        </mat-menu>
+
+        <button
+          mat-fab
+          color="accent"
+          class="add-new-button"
+          matTooltip="Add a new spot"
+          matTooltipPosition="left"
+          (click)="openAddNewSpotDialog()"
+        >
+          <mat-icon>add</mat-icon>
+        </button>
+      </ng-container>
+
+      <!-- Not logged in -->
+      <ng-template #showLogin>
+        <button
+          mat-fab
+          matTooltip="Login / Signup"
+          matTooltipPosition="left"
+          (click)="openAuthDialog()"
+        >
+          <mat-icon>person</mat-icon>
+        </button>
+      </ng-template>
+    </div>
+
+    <div *ngIf="firebaseService.currentUser" class="top-left-buttons">
       <button
         mat-fab
-        [matTooltip]="user.displayName ?? user.email ?? 'TODO'"
-        matTooltipPosition="left"
-        [matMenuTriggerFor]="userMenu"
+        color="accent"
+        class="list-button"
+        matTooltip="See spots in a list"
+        matTooltipPosition="below"
+        (click)="drawer.toggle()"
       >
-        <mat-icon>face</mat-icon>
+        <mat-icon>format_list_bulleted</mat-icon>
       </button>
-      <mat-menu #userMenu="matMenu">
-        <ng-template matMenuContent>
-          <button mat-menu-item (click)="auth.signOut()">Log out</button>
-        </ng-template>
-      </mat-menu>
 
       <button
         mat-fab
         color="accent"
-        class="add-new-button"
-        matTooltip="Add a new spot"
-        matTooltipPosition="left"
-        (click)="openAddNewSpotDialog()"
+        class="filter-button"
+        matTooltip="Search and filter spots"
+        matTooltipPosition="below"
       >
-        <mat-icon>add</mat-icon>
+        <!-- (click)="openAddNewSpotDialog()" -->
+        <mat-icon>manage_search</mat-icon>
       </button>
-    </ng-container>
+    </div>
 
-    <!-- Not logged in -->
-    <ng-template #showLogin>
-      <button
-        mat-fab
-        matTooltip="Login / Signup"
-        matTooltipPosition="left"
-        (click)="openAuthDialog()"
-      >
-        <mat-icon>person</mat-icon>
-      </button>
-    </ng-template>
-  </div>
-
-  <map></map>
-</div>
+    <map></map>
+  </mat-drawer-content>
+</mat-drawer-container>

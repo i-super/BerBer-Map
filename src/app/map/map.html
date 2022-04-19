@@ -27,9 +27,9 @@
 <button
   #centerButton
   class="center-button"
-  matTooltip="Center to your location"
+  [matTooltip]="myLocation ? 'Center to your location' : 'Location is disabled by your browser'"
   matTooltipPosition="left"
   (click)="centerToUserLocation()"
 >
-  <mat-icon>center_focus_strong</mat-icon>
+  <mat-icon>{{myLocation ? "gps_fixed" : "location_searching"}}</mat-icon>
 </button>
