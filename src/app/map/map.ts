@@ -79,4 +79,29 @@ export class MapComponent implements AfterViewInit, OnDestroy {
   onMarkerClick(marker: Marker) {
     this.firebaseService.openSpotInfoDialog(marker);
   }
+
+  getMarkerOption(marker: Marker): google.maps.MarkerOptions {
+    let markSelected = false;
+    if (this.firebaseService.selectedSpotId === marker.spotId) {
+      markSelected = true;
+    }
+    return {
+      draggable: false,
+      icon: {
+        // https://developers.google.com/maps/documentation/javascript/reference/marker#MarkerLabel
+        path: 'M12,11.5A2.5,2.5 0 0,1 9.5,9A2.5,2.5 0 0,1 12,6.5A2.5,2.5 0 0,1 14.5,9A2.5,2.5 0 0,1 12,11.5M12,2A7,7 0 0,0 5,9C5,14.25 12,22 12,22C12,22 19,14.25 19,9A7,7 0 0,0 12,2Z',
+        anchor: new google.maps.Point(12, 17),
+        fillOpacity: 1,
+        fillColor: marker.color,
+        strokeWeight: 2,
+        strokeColor: markSelected ? '#daddfc' : 'white',
+        scale: markSelected ? 2.7 : 2,
+        labelOrigin: new google.maps.Point(12, 15),
+      },
+    };
+  }
+
+  clickMap() {
+    this.firebaseService.selectedSpotId = undefined;
+  }
 }

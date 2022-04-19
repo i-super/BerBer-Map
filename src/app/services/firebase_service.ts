@@ -61,7 +61,7 @@ interface TagDB {
 
 export interface Marker {
   position: google.maps.LatLngLiteral;
-  options: google.maps.MarkerOptions;
+  color: string;
   spotId: string;
   spot: SpotDB;
 }
@@ -81,6 +81,7 @@ export class FirebaseService implements OnDestroy {
 
   spots: SpotDB[] = [];
   markers: Marker[] = [];
+  selectedSpotId?: string;
 
   constructor(private readonly matDialog: MatDialog) {
     onAuthStateChanged(auth, (user) => {
@@ -108,25 +109,10 @@ export class FirebaseService implements OnDestroy {
 
     querySnapshot.forEach((doc) => {
       const spot = doc.data();
-      let fillColor = '';
       this.spots.push(spot);
-      fillColor = iconColorMap[spot.icon];
       this.markers.push({
         position: { lat: spot.lat, lng: spot.lng },
-        options: {
-          draggable: false,
-          icon: {
-            // https://developers.google.com/maps/documentation/javascript/reference/marker#MarkerLabel
-            path: 'M12,11.5A2.5,2.5 0 0,1 9.5,9A2.5,2.5 0 0,1 12,6.5A2.5,2.5 0 0,1 14.5,9A2.5,2.5 0 0,1 12,11.5M12,2A7,7 0 0,0 5,9C5,14.25 12,22 12,22C12,22 19,14.25 19,9A7,7 0 0,0 12,2Z',
-            anchor: new google.maps.Point(12, 17),
-            fillOpacity: 1,
-            fillColor,
-            strokeWeight: 2,
-            strokeColor: 'white',
-            scale: 2,
-            labelOrigin: new google.maps.Point(12, 15),
-          },
-        },
+        color: iconColorMap[spot.icon],
         spotId: doc.id,
         spot,
       });
@@ -358,6 +344,7 @@ export class FirebaseService implements OnDestroy {
       data: marker,
       autoFocus: false,
     });
+    this.selectedSpotId = marker.spotId;
   }
 
   panTo(pos: Pos) {
