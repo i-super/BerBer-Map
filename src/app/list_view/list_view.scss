@@ -6,11 +6,12 @@
 
 .spot-wrapper {
   padding: 16px;
+  height: 158px;
   background: white;
   border-radius: 4px;
   box-shadow: 0px 2px 1px -1px rgb(0 0 0 / 20%), 0px 1px 1px 0px rgb(0 0 0 / 14%),
     0px 1px 3px 0px rgb(0 0 0 / 12%);
-  transtion: background 0.3s;
+  transition: background 0.3s;
 
   &:not(:last-child) {
     margin-bottom: 10px;
@@ -31,6 +32,9 @@
   font-family: 'Montserrat Alternates', sans-serif;
   font-weight: bold;
   line-height: 1.2;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
   color: #2e4c6d;
 }
 
@@ -76,10 +80,10 @@ mat-icon {
 .tag-row {
   display: flex;
   align-items: center;
-  flex-wrap: wrap;
   padding: 2px 0;
   font-size: 14px;
   color: #2e4c6d;
+  overflow: auto;
 }
 
 .tag-wrapper {

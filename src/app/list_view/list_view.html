@@ -14,8 +14,8 @@
           {{marker.spot.icon}}
         </mat-icon>
       </div>
-      <div *ngIf="marker.spot.images.length > 0" class="images">
-        <img [src]="marker.spot.images[0].url" />
+      <div class="images">
+        <img *ngIf="marker.spot.images.length > 0" [src]="marker.spot.images[0].url" />
       </div>
     </div>
 
