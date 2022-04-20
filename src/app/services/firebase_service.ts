@@ -16,7 +16,7 @@ import {
 } from 'firebase/firestore';
 import { DocumentReference } from 'firebase/firestore/lite';
 import { deleteObject, getDownloadURL, getStorage, ref, uploadBytes } from 'firebase/storage';
-import { Subject } from 'rxjs';
+import { BehaviorSubject, Subject } from 'rxjs';
 
 import { auth, db } from '../firebase';
 import { iconColorMap } from './marker_icon';
@@ -78,6 +78,8 @@ export class FirebaseService implements OnDestroy {
 
   readonly authReady = new Subject<void>();
   readonly panToSubject = new Subject<Pos>();
+  readonly markersChangeSubject = new Subject<void>();
+  readonly drawerOpenedChangeSubject = new BehaviorSubject<boolean>(false);
 
   spots: SpotDB[] = [];
   markers: Marker[] = [];
@@ -93,6 +95,7 @@ export class FirebaseService implements OnDestroy {
   ngOnDestroy() {
     this.authReady.complete();
     this.panToSubject.complete();
+    this.markersChangeSubject.complete();
   }
 
   async fetchSpots() {
@@ -117,6 +120,7 @@ export class FirebaseService implements OnDestroy {
         spot,
       });
     });
+    this.markersChangeSubject.next();
   }
 
   async createOrEditSpot({

@@ -164,3 +164,16 @@ body {
 .pac-item {
   padding: 4px 8px;
 }
+
+.input-outline-primary.mat-form-field-appearance-outline {
+  .mat-form-field-outline-thick {
+    color: #2e4c6d;
+  }
+}
+
+mat-form-field.no-padding {
+  .mat-form-field-wrapper {
+    padding-bottom: 0;
+    margin-bottom: 0;
+  }
+}

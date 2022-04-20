@@ -6,13 +6,6 @@ mat-form-field {
   &:last-child {
     margin-bottom: 18px;
   }
-  &.no-padding {
-    ::ng-deep {
-      .mat-form-field-wrapper {
-        padding-bottom: 0;
-      }
-    }
-  }
 }
 
 .auth-inputs {

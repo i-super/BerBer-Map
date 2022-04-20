@@ -1,7 +1,20 @@
 <div class="list-wrapper">
+  <div class="search-box">
+    <mat-form-field class="no-padding input-outline-primary" appearance="outline">
+      <mat-label>Search for spots</mat-label>
+      <input
+        #searchInput
+        matInput
+        placeholder="Ex: Yosemite"
+        [(ngModel)]="searchValue"
+        (ngModelChange)="filterMarkers()"
+        (keydown.enter)="$event.preventDefault(); filterMarkers()"
+      />
+      <mat-icon matSuffix (click)="filterMarkers()">search</mat-icon>
+    </mat-form-field>
+  </div>
   <div
-    *ngFor="let marker of firebaseService.markers; let i = index;"
-    id="spot"
+    *ngFor="let marker of filteredMarkers; let i = index;"
     class="spot-wrapper"
     [class.selected]="firebaseService.selectedSpotId === marker.spotId"
     (click)="openSpotInfo(marker)"

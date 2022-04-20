@@ -1,7 +1,36 @@
 .list-wrapper {
-  max-width: 400px;
-  min-width: 200px;
+  width: 400px;
   padding: 20px;
+}
+
+.search-box {
+  font-size: 16px;
+}
+
+mat-form-field {
+  margin-bottom: 20px;
+  width: 100%;
+
+  ::ng-deep {
+    .mat-form-field-wrapper {
+      background: white;
+      border-radius: 6px;
+    }
+  }
+
+  mat-label {
+    padding-left: 6px;
+  }
+
+  input {
+    padding-left: 6px;
+    color: #262626;
+  }
+
+  mat-icon {
+    padding-right: 8px;
+    color: #616161;
+  }
 }
 
 .spot-wrapper {
@@ -97,8 +126,4 @@ mat-icon {
     line-height: 22px;
     white-space: nowrap;
   }
-}
-
-mat-divider {
-  margin: 10px 0 0;
 }

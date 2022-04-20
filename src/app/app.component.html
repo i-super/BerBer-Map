@@ -1,5 +1,10 @@
 <mat-drawer-container class="drawer-container" autosize hasBackdrop="false">
-  <mat-drawer #drawer class="drawer-content" mode="side">
+  <mat-drawer
+    #drawer
+    class="drawer-content"
+    mode="side"
+    (openedChange)="drawerOpenedChange($event)"
+  >
     <list-view></list-view>
   </mat-drawer>
 
@@ -49,22 +54,10 @@
       <button
         mat-fab
         color="accent"
-        class="list-button"
-        matTooltip="See spots in a list"
-        matTooltipPosition="below"
+        matTooltip="Search and filter spots"
+        matTooltipPosition="right"
         (click)="drawer.toggle()"
       >
-        <mat-icon>format_list_bulleted</mat-icon>
-      </button>
-
-      <button
-        mat-fab
-        color="accent"
-        class="filter-button"
-        matTooltip="Search and filter spots"
-        matTooltipPosition="below"
-      >
-        <!-- (click)="openAddNewSpotDialog()" -->
         <mat-icon>manage_search</mat-icon>
       </button>
     </div>

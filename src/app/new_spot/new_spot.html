@@ -1,6 +1,6 @@
 <!-- Spot -->
 <div *ngIf="!edit" class="row">
-  <mat-form-field class="spot-container no-padding" appearance="outline">
+  <mat-form-field class="spot-container no-padding input-outline-primary" appearance="outline">
     <mat-label>Spot</mat-label>
     <input #spotInput matInput placeholder="Ex. Yosemite" />
   </mat-form-field>
@@ -14,7 +14,7 @@
 </div>
 
 <div *ngIf="edit" class="row">
-  <mat-form-field class="spot-container no-padding" appearance="outline">
+  <mat-form-field class="spot-container no-padding input-outline-primary" appearance="outline">
     <mat-label>Spot</mat-label>
     <input
       #spotInput
@@ -55,7 +55,7 @@
 
 <!-- Name -->
 <div class="row">
-  <mat-form-field class="name-container no-padding" appearance="outline">
+  <mat-form-field class="name-container no-padding input-outline-primary" appearance="outline">
     <mat-label>Name</mat-label>
     <input matInput [(ngModel)]="name" />
   </mat-form-field>
@@ -94,7 +94,7 @@
       </button>
     </div>
 
-    <mat-form-field class="no-padding" appearance="outline">
+    <mat-form-field class="no-padding input-outline-primary" appearance="outline">
       <mat-label>Features</mat-label>
       <input
         #tagInput
@@ -121,7 +121,7 @@
 
 <!-- Notes -->
 <div class="row">
-  <mat-form-field class="note-container no-padding" appearance="outline">
+  <mat-form-field class="note-container no-padding input-outline-primary" appearance="outline">
     <mat-label>Notes</mat-label>
     <textarea matInput [(ngModel)]="notes"></textarea>
   </mat-form-field>
