@@ -58,7 +58,6 @@
       [disabled]="loading"
       (click)="onSubmit()"
     >
-      <mat-spinner *ngIf="loading" color="accent" [diameter]="16"></mat-spinner>
       {{selectedTabIndex === 0 ? 'Login' : 'Sign up' }}
     </button>
   </div>
