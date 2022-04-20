@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { GoogleMapsModule } from '@angular/google-maps';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatButtonModule } from '@angular/material/button';
+import { MatCardModule } from '@angular/material/card';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
@@ -57,6 +58,7 @@ import { SpotInfoDialogComponent } from './spot_info/spot_info_dialog';
     }),
     MatAutocompleteModule,
     MatButtonModule,
+    MatCardModule,
     MatChipsModule,
     MatDialogModule,
     MatIconModule,

@@ -1,1 +1,28 @@
-<div class="list-wrapper">haha</div>
+<div class="list-wrapper">
+  <div
+    *ngFor="let marker of firebaseService.markers; let i = index;"
+    id="spot"
+    class="spot-wrapper"
+    [class.selected]="firebaseService.selectedSpotId === marker.spotId"
+    (click)="openSpotInfo(marker)"
+  >
+    <div class="spot-name">{{marker.spot.name}}</div>
+    <div class="detail">
+      <div class="category-and-tag-wrapper">
+        <div class="category">{{marker.spot.category}}</div>
+        <mat-icon [ngStyle]="{color: iconColorMap[marker.spot.icon]}">
+          {{marker.spot.icon}}
+        </mat-icon>
+      </div>
+      <div *ngIf="marker.spot.images.length > 0" class="images">
+        <img [src]="marker.spot.images[0].url" />
+      </div>
+    </div>
+
+    <div class="tag-row">
+      <div *ngFor="let tag of marker.spot.tags" class="tag-wrapper">
+        <div class="tag-content">{{tag}}</div>
+      </div>
+    </div>
+  </div>
+</div>
