@@ -13,8 +13,11 @@ export class ListViewComponent implements OnDestroy {
 
   readonly iconColorMap = iconColorMap;
   isSelected = false;
+
   searchValue = '';
   filteredMarkers: Marker[] = [];
+
+  isFilterCardOpen = false;
 
   private readonly destroyed = new ReplaySubject<void>(1);
 
@@ -54,7 +57,6 @@ export class ListViewComponent implements OnDestroy {
   filterMarkers() {
     if (!this.searchValue) {
       this.filteredMarkers = this.firebaseService.markers;
-      console.log('filter', this.filteredMarkers);
       return;
     }
     this.filteredMarkers = [];
@@ -64,5 +66,9 @@ export class ListViewComponent implements OnDestroy {
         this.filteredMarkers.push(this.firebaseService.markers[i]);
       }
     }
+  }
+
+  openFilterCard() {
+    this.isFilterCardOpen = !this.isFilterCardOpen;
   }
 }

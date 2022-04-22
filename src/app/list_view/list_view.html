@@ -12,7 +12,28 @@
       />
       <mat-icon matSuffix (click)="filterMarkers()">search</mat-icon>
     </mat-form-field>
+    <div class="filter-button"><div (click)="openFilterCard()">Add filter</div></div>
   </div>
+
+  <div *ngIf="isFilterCardOpen" class="filter-detail-wrapper scale-up-ver-top">
+    <div class="filter-items select-category">
+      <div class="filter-title">Category :</div>
+      <mat-checkbox>Hike</mat-checkbox>
+      <mat-checkbox>Food</mat-checkbox>
+      <mat-checkbox>Accommodation</mat-checkbox>
+    </div>
+    <mat-divider></mat-divider>
+
+    <div class="filter-items select-icon">
+      <div class="filter-title">Mark :</div>
+    </div>
+    <mat-divider></mat-divider>
+
+    <div class="filter-items select-tag">
+      <div class="filter-title">Tags :</div>
+    </div>
+  </div>
+
   <div
     *ngFor="let marker of filteredMarkers; let i = index;"
     class="spot-wrapper"
