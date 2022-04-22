@@ -4,12 +4,13 @@
 }
 
 .search-box {
-  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
   font-size: 16px;
 }
 
 mat-form-field {
-  margin-bottom: 40px;
   width: 100%;
 
   ::ng-deep {
@@ -35,26 +36,32 @@ mat-form-field {
 }
 
 .filter-button {
-  position: absolute;
-  bottom: 15px;
-  right: 0;
-  display: flex;
-  justify-content: flex-end;
-  div {
-    padding-right: 10px;
-    font-size: 14px;
-    color: #396fb0;
-    text-decoration-line: underline;
-    transition: color 0.3s;
-    &:hover {
-      cursor: pointer;
-      color: #2e4c6d;
+  margin: 4px 0 0 5px;
+  width: 36px;
+  height: 36px;
+  line-height: 36px;
+  transition: background 0.3s;
+  transition-property: backgroud, color;
+
+  &:hover {
+    background: #396fb0;
+    mat-icon {
+      color: white;
     }
+  }
+
+  mat-icon {
+    $size: 28px;
+    font-size: $size;
+    width: $size;
+    height: $size;
+    line-height: 32px;
+    color: #2e4c6d;
   }
 }
 
 .filter-detail-wrapper {
-  margin-bottom: 20px;
+  margin-top: 3px;
   padding: 16px;
   background: white;
   border-radius: 4px;
@@ -110,6 +117,10 @@ mat-divider {
     0px 1px 3px 0px rgb(0 0 0 / 12%);
   transition: background 0.3s;
 
+  &:first-child {
+    margin-top: 20px;
+  }
+
   &:not(:last-child) {
     margin-bottom: 10px;
   }
@@ -140,6 +151,14 @@ mat-divider {
   align-items: flex-start;
   justify-content: space-between;
   margin: 5px 0 6px;
+
+  mat-icon {
+    margin-left: 3px;
+    width: 16px;
+    height: 16px;
+    font-size: 16px;
+    line-height: 16px;
+  }
 }
 
 .category-and-tag-wrapper {
@@ -153,14 +172,6 @@ mat-divider {
   font-family: 'Questrial', sans-serif;
   font-size: 16px;
   color: #767676;
-}
-
-mat-icon {
-  margin-left: 3px;
-  width: 16px;
-  height: 16px;
-  font-size: 16px;
-  line-height: 16px;
 }
 
 .images {
