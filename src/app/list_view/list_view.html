@@ -1,5 +1,16 @@
 <div class="list-wrapper">
   <div class="search-box">
+    <button
+      class="back-button"
+      mat-icon-button
+      color="accent"
+      matTooltip="Close search and filter spots"
+      matTooltipPosition="right"
+      (click)="drawerOpen()"
+    >
+      <mat-icon>arrow_back</mat-icon>
+    </button>
+
     <mat-form-field class="no-padding input-outline-primary" appearance="outline">
       <mat-label>Search for spots</mat-label>
       <input
@@ -28,9 +39,13 @@
   <div *ngIf="isFilterCardOpen" class="filter-detail-wrapper scale-up-ver-top">
     <div class="filter-items select-category">
       <div class="filter-title">Category :</div>
-      <mat-checkbox>Hike</mat-checkbox>
-      <mat-checkbox>Food</mat-checkbox>
-      <mat-checkbox>Accommodation</mat-checkbox>
+      <div *ngFor="let item of categoryItems" class="category-items">
+        <mat-checkbox
+          [checked]="selectedCategory.has(item)"
+          (change)="updateSelectedCategory($event, item)"
+          >{{item}}</mat-checkbox
+        >
+      </div>
     </div>
     <mat-divider></mat-divider>
 
@@ -45,7 +60,7 @@
     <mat-divider></mat-divider>
 
     <div class="bottom-row">
-      <div class="clear-filter">Clear filter</div>
+      <div class="clear-filter" (click)="clearFilter()">Clear filter</div>
       <button
         class="close-filter-panel-button"
         mat-icon-button

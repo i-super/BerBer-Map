@@ -79,7 +79,7 @@ export class FirebaseService implements OnDestroy {
   readonly authReady = new Subject<void>();
   readonly panToSubject = new Subject<Pos>();
   readonly markersChangeSubject = new Subject<void>();
-  readonly drawerOpenedChangeSubject = new BehaviorSubject<boolean>(false);
+  readonly drawerOpenSubject = new BehaviorSubject<boolean>(false);
 
   spots: SpotDB[] = [];
   markers: Marker[] = [];

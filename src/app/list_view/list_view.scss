@@ -10,6 +10,27 @@
   font-size: 16px;
 }
 
+.back-button {
+  margin: 4px 5px 0 0;
+  width: 30px;
+  height: 30px;
+  line-height: 30px;
+  transition: background 0.3s;
+
+  &:hover {
+    background: #c1deea;
+  }
+
+  mat-icon {
+    $size: 24px;
+    font-size: $size;
+    width: $size;
+    height: $size;
+    line-height: $size;
+    color: #396fb0;
+  }
+}
+
 mat-form-field {
   width: 100%;
 
@@ -41,13 +62,9 @@ mat-form-field {
   height: 36px;
   line-height: 36px;
   transition: background 0.3s;
-  transition-property: backgroud, color;
 
   &:hover {
-    background: #396fb0;
-    mat-icon {
-      color: white;
-    }
+    background: #c1deea;
   }
 
   mat-icon {
@@ -78,6 +95,11 @@ mat-form-field {
 .filter-title {
   width: 75px;
   font-size: 16px;
+}
+
+.category-items {
+  display: flex;
+  align-items: center;
 }
 
 mat-checkbox {
