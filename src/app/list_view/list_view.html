@@ -36,7 +36,7 @@
     </button>
   </div>
 
-  <div *ngIf="isFilterCardOpen" class="filter-detail-wrapper scale-up-ver-top">
+  <div *ngIf="isFilterCardOpen" class="filter-detail-wrapper" [@expandY]>
     <div class="filter-section">
       <div class="filter-title">Category :</div>
       <div *ngFor="let category of firebaseService.categories" class="filter-items">

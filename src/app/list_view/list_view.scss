@@ -165,26 +165,6 @@ mat-divider {
   }
 }
 
-/**
-  * ----------------------------------------
-  * animation scale-up-ver-top
-  * ----------------------------------------
-  */
-@keyframes scale-up-ver-top {
-  0% {
-    transform: scaleY(0);
-    transform-origin: 100% 0%;
-  }
-  100% {
-    transform: scaleY(1);
-    transform-origin: 100% 0%;
-  }
-}
-
-.scale-up-ver-top {
-  animation: scale-up-ver-top 0.2s ease-in both;
-}
-
 .total-spots {
   display: flex;
   align-items: center;

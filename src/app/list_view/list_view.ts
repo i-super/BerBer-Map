@@ -1,12 +1,43 @@
+import { animate, style, transition, trigger } from '@angular/animations';
 import { Component, ElementRef, OnDestroy, ViewChild } from '@angular/core';
 import { ReplaySubject, takeUntil } from 'rxjs';
 import { FirebaseService, Marker } from '../services/firebase_service';
 import { iconColorMap } from '../services/marker_icon';
 
+const heightAutoStyle = {
+  height: '*',
+  overflow: 'hidden',
+  marginTop: '*',
+  marginBottom: '*',
+  paddingTop: '*',
+  paddingBottom: '*',
+};
+
+const heightZeroStyle = {
+  height: 0,
+  overflow: 'hidden',
+  marginTop: 0,
+  marginBottom: 0,
+  paddingTop: 0,
+  paddingBottom: 0,
+};
+
 @Component({
   selector: 'list-view',
   templateUrl: 'list_view.html',
   styleUrls: ['./list_view.scss'],
+  animations: [
+    trigger('expandY', [
+      transition(':enter', [
+        style(heightZeroStyle),
+        animate('0.3s ease-in-out', style(heightAutoStyle)),
+      ]),
+      transition(':leave', [
+        style(heightAutoStyle),
+        animate('0.3s ease-in-out', style(heightZeroStyle)),
+      ]),
+    ]),
+  ],
 })
 export class ListViewComponent implements OnDestroy {
   @ViewChild('searchInput') searchInput!: ElementRef;
