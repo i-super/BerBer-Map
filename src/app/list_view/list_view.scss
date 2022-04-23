@@ -88,6 +88,43 @@ mat-divider {
   margin: 16px 0;
 }
 
+.bottom-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  .clear-filter {
+    color: #396fb0;
+    text-decoration-line: underline;
+    transition: color 0.3s;
+
+    &:hover {
+      cursor: pointer;
+      color: #2e4c6d;
+    }
+  }
+
+  .close-filter-panel-button {
+    width: 30px;
+    height: 30px;
+    line-height: 30px;
+    transition: background 0.3s;
+
+    &:hover {
+      background: #e6f2f6;
+    }
+
+    mat-icon {
+      $size: 24px;
+      font-size: $size;
+      width: $size;
+      height: $size;
+      line-height: $size;
+      color: #396fb0;
+    }
+  }
+}
+
 /**
   * ----------------------------------------
   * animation scale-up-ver-top

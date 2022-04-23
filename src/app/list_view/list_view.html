@@ -42,6 +42,21 @@
     <div class="filter-items select-tag">
       <div class="filter-title">Tags :</div>
     </div>
+    <mat-divider></mat-divider>
+
+    <div class="bottom-row">
+      <div class="clear-filter">Clear filter</div>
+      <button
+        class="close-filter-panel-button"
+        mat-icon-button
+        color="accent"
+        matTooltip="Close filter panel"
+        matTooltipPosition="above"
+        (click)="openFilterCard()"
+      >
+        <mat-icon>expand_less</mat-icon>
+      </button>
+    </div>
   </div>
 
   <div>

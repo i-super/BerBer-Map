@@ -72,6 +72,7 @@ mat-form-field {
   display: inline-flex;
   align-items: center;
   height: 36px;
+  transition: background 0.3s;
 
   ::ng-deep {
     .mat-button-wrapper {

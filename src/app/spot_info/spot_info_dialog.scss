@@ -78,6 +78,8 @@
   height: 40px;
   line-height: 40px;
   transition: background 0.3s;
+  transition-property: backgroud, color;
+
   mat-icon {
     color: #396fb0;
     transition: color 0.3s;
@@ -184,6 +186,8 @@
   position: absolute;
   top: 20px;
   right: 20px;
+  transition: backgrocolorund 0.3s;
+
   mat-icon {
     color: #396fb0;
     transition: color 0.3s;
