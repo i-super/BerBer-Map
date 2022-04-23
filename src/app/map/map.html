@@ -16,7 +16,7 @@
     [options]="myLocationMarkerOptions"
   ></map-marker>
   <map-marker
-    *ngFor="let marker of firebaseService.markers"
+    *ngFor="let marker of firebaseService.filteredMarkers"
     [position]="marker.position"
     [options]="getMarkerOption(marker)"
     [clickable]="true"

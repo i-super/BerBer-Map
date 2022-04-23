@@ -17,11 +17,11 @@
         #searchInput
         matInput
         placeholder="Ex: Yosemite"
-        [(ngModel)]="searchValue"
-        (ngModelChange)="filterMarkers()"
-        (keydown.enter)="$event.preventDefault(); filterMarkers()"
+        [(ngModel)]="firebaseService.filterText"
+        (ngModelChange)="firebaseService.filterMarkers()"
+        (keydown.enter)="$event.preventDefault(); firebaseService.filterMarkers()"
       />
-      <mat-icon matSuffix (click)="filterMarkers()">search</mat-icon>
+      <mat-icon matSuffix (click)="firebaseService.filterMarkers()">search</mat-icon>
     </mat-form-field>
 
     <button
@@ -39,12 +39,13 @@
   <div *ngIf="isFilterCardOpen" class="filter-detail-wrapper scale-up-ver-top">
     <div class="filter-items select-category">
       <div class="filter-title">Category :</div>
-      <div *ngFor="let item of categoryItems" class="category-items">
+      <div *ngFor="let category of categories" class="category-items">
         <mat-checkbox
-          [checked]="selectedCategory.has(item)"
-          (change)="updateSelectedCategory($event, item)"
-          >{{item}}</mat-checkbox
+          [checked]="firebaseService.filterCategory.has(category)"
+          (change)="firebaseService.updateFilterCategory(category, $event.checked)"
         >
+          {{category}}
+        </mat-checkbox>
       </div>
     </div>
     <mat-divider></mat-divider>
@@ -60,7 +61,7 @@
     <mat-divider></mat-divider>
 
     <div class="bottom-row">
-      <div class="clear-filter" (click)="clearFilter()">Clear filter</div>
+      <div class="clear-filter" (click)="firebaseService.clearFilter()">Clear filter</div>
       <button
         class="close-filter-panel-button"
         mat-icon-button
@@ -76,7 +77,7 @@
 
   <div>
     <div
-      *ngFor="let marker of filteredMarkers; let i = index;"
+      *ngFor="let marker of firebaseService.filteredMarkers; let i = index;"
       class="spot-wrapper"
       [class.selected]="firebaseService.selectedSpotId === marker.spotId"
       (click)="openSpotInfo(marker)"

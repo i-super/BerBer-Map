@@ -78,12 +78,14 @@ export class FirebaseService implements OnDestroy {
 
   readonly authReady = new Subject<void>();
   readonly panToSubject = new Subject<Pos>();
-  readonly markersChangeSubject = new Subject<void>();
   readonly drawerOpenSubject = new BehaviorSubject<boolean>(false);
 
-  spots: SpotDB[] = [];
-  markers: Marker[] = [];
   selectedSpotId?: string;
+  markers: Marker[] = [];
+
+  filteredMarkers: Marker[] = [];
+  filterText = '';
+  filterCategory = new Set<string>();
 
   constructor(private readonly matDialog: MatDialog) {
     onAuthStateChanged(auth, (user) => {
@@ -95,11 +97,9 @@ export class FirebaseService implements OnDestroy {
   ngOnDestroy() {
     this.authReady.complete();
     this.panToSubject.complete();
-    this.markersChangeSubject.complete();
   }
 
   async fetchSpots() {
-    this.spots = [];
     this.markers = [];
     if (!this.currentUser) {
       return;
@@ -112,7 +112,6 @@ export class FirebaseService implements OnDestroy {
 
     querySnapshot.forEach((doc) => {
       const spot = doc.data();
-      this.spots.push(spot);
       this.markers.push({
         position: { lat: spot.lat, lng: spot.lng },
         color: iconColorMap[spot.icon],
@@ -120,7 +119,7 @@ export class FirebaseService implements OnDestroy {
         spot,
       });
     });
-    this.markersChangeSubject.next();
+    this.filterMarkers();
   }
 
   async createOrEditSpot({
@@ -353,5 +352,50 @@ export class FirebaseService implements OnDestroy {
 
   panTo(pos: Pos) {
     this.panToSubject.next(pos);
+  }
+
+  updateFilterCategory(category: string, checked: boolean) {
+    if (checked) {
+      this.filterCategory.add(category);
+    } else {
+      this.filterCategory.delete(category);
+    }
+    this.filterMarkers();
+  }
+
+  filterMarkers() {
+    // Search input box.
+    if (!this.filterText) {
+      this.filteredMarkers = this.markers;
+    } else {
+      this.filteredMarkers = [];
+      const str = this.filterText.toLowerCase();
+      for (let i = 0; i < this.markers.length; ++i) {
+        // ber
+        if (this.markers[i].spot.name.toLowerCase().includes(str)) {
+          this.filteredMarkers.push(this.markers[i]);
+        }
+      }
+    }
+
+    // Filter panel.
+    // Category.
+    if (this.filterCategory.size) {
+      // If didn't select any categories, means doesn't apply any filter
+      let tempFilteredMarkers: Marker[] = [];
+      for (const category of this.filterCategory) {
+        for (let i = 0; i < this.filteredMarkers.length; ++i) {
+          if (this.filteredMarkers[i].spot.category === category) {
+            tempFilteredMarkers.push(this.filteredMarkers[i]);
+          }
+        }
+      }
+      this.filteredMarkers = tempFilteredMarkers;
+    }
+  }
+
+  clearFilter() {
+    this.filterCategory.clear();
+    this.filterMarkers();
   }
 }
