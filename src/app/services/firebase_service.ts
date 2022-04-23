@@ -98,6 +98,9 @@ export class FirebaseService implements OnDestroy {
   filterText = '';
   filterCategory = new Set<string>();
   filterIcon = new Set<string>();
+  filterTag = new Set<string>();
+
+  allTags = new Set<string>();
 
   constructor(private readonly matDialog: MatDialog) {
     onAuthStateChanged(auth, (user) => {
@@ -130,6 +133,9 @@ export class FirebaseService implements OnDestroy {
         spotId: doc.id,
         spot,
       });
+      for (const tag of spot.tags) {
+        this.allTags.add(tag);
+      }
     });
     this.filterMarkers();
   }
@@ -384,6 +390,15 @@ export class FirebaseService implements OnDestroy {
     this.filterMarkers();
   }
 
+  updateFilterTag(tag: string) {
+    if (this.filterTag.has(tag)) {
+      this.filterTag.delete(tag);
+    } else {
+      this.filterTag.add(tag);
+    }
+    this.filterMarkers();
+  }
+
   filterMarkers() {
     // Search input box.
     if (!this.filterText) {
@@ -423,6 +438,25 @@ export class FirebaseService implements OnDestroy {
           if (this.filteredMarkers[i].spot.icon === icon) {
             tempFilteredMarkers.push(this.filteredMarkers[i]);
           }
+        }
+      }
+      this.filteredMarkers = tempFilteredMarkers;
+    }
+
+    // Tag.
+    if (this.filterTag.size) {
+      // If didn't select any tags, means doesn't apply any filter
+      let tempFilteredMarkers: Marker[] = [];
+      let tempSet = new Set<Marker>();
+      for (const tag of this.filterTag) {
+        for (let i = 0; i < this.filteredMarkers.length; ++i) {
+          for (let k = 0; k < this.filteredMarkers[i].spot.tags.length; ++k)
+            if (this.filteredMarkers[i].spot.tags[k] === tag) {
+              if (!tempSet.has(this.filteredMarkers[i])) {
+                tempSet.add(this.filteredMarkers[i]);
+                tempFilteredMarkers.push(this.filteredMarkers[i]);
+              }
+            }
         }
       }
       this.filteredMarkers = tempFilteredMarkers;

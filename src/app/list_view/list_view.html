@@ -70,8 +70,18 @@
 
     <div class="filter-section">
       <div class="filter-title">Tags :</div>
+      <div *ngIf="firebaseService.allTags.size" class="tags">
+        <div
+          *ngFor="let tag of firebaseService.allTags"
+          class="tag"
+          [class.selected]="firebaseService.filterTag.has(tag)"
+          (click)="firebaseService.updateFilterTag(tag)"
+        >
+          {{tag}}
+        </div>
+      </div>
     </div>
-    <mat-divider></mat-divider>
+    <mat-divider class="last-divider"></mat-divider>
 
     <div class="bottom-row">
       <div class="clear-filter" (click)="firebaseService.clearFilter()">Clear filter</div>
