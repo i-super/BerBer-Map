@@ -37,9 +37,9 @@
   </div>
 
   <div *ngIf="isFilterCardOpen" class="filter-detail-wrapper scale-up-ver-top">
-    <div class="filter-items select-category">
+    <div class="filter-section">
       <div class="filter-title">Category :</div>
-      <div *ngFor="let category of categories" class="category-items">
+      <div *ngFor="let category of firebaseService.categories" class="filter-items">
         <mat-checkbox
           [checked]="firebaseService.filterCategory.has(category)"
           (change)="firebaseService.updateFilterCategory(category, $event.checked)"
@@ -50,12 +50,25 @@
     </div>
     <mat-divider></mat-divider>
 
-    <div class="filter-items select-icon">
+    <div class="filter-section">
       <div class="filter-title">Mark :</div>
+      <div class="icons-wrapper">
+        <div *ngFor="let icon of firebaseService.icons" class="filter-items">
+          <mat-checkbox
+            [checked]="firebaseService.filterIcon.has(icon.icon)"
+            (change)="firebaseService.updateFilterIcon(icon.icon, $event.checked)"
+          >
+            <div class="icon-wrapper">
+              <div>{{icon.label}}</div>
+              <mat-icon class="mark-icon" [style.color]="icon.color"> {{icon.icon}} </mat-icon>
+            </div>
+          </mat-checkbox>
+        </div>
+      </div>
     </div>
     <mat-divider></mat-divider>
 
-    <div class="filter-items select-tag">
+    <div class="filter-section">
       <div class="filter-title">Tags :</div>
     </div>
     <mat-divider></mat-divider>

@@ -65,7 +65,7 @@
 <div class="row">
   <div class="title">Category</div>
   <mat-radio-group aria-label="Select an option" [(ngModel)]="selectedCategory">
-    <mat-radio-button *ngFor="let category of categories" [value]="category">
+    <mat-radio-button *ngFor="let category of firebaseService.categories" [value]="category">
       {{category}}
     </mat-radio-button>
   </mat-radio-group>
@@ -75,7 +75,7 @@
 <div class="row">
   <div class="title">Mark</div>
   <mat-radio-group aria-label="Select an option" [(ngModel)]="selectedIcon">
-    <mat-radio-button *ngFor="let icon of icons" [value]="icon.icon">
+    <mat-radio-button *ngFor="let icon of firebaseService.icons" [value]="icon.icon">
       {{icon.label}}
       <mat-icon class="mark-icon" [style.color]="icon.color"> {{icon.icon}} </mat-icon>
     </mat-radio-button>

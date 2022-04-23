@@ -19,7 +19,7 @@ import { deleteObject, getDownloadURL, getStorage, ref, uploadBytes } from 'fire
 import { BehaviorSubject, Subject } from 'rxjs';
 
 import { auth, db } from '../firebase';
-import { iconColorMap } from './marker_icon';
+import { iconColorMap, iconLabelMap } from './marker_icon';
 import { SpotInfoDialogComponent } from '../spot_info/spot_info_dialog';
 import { MatDialog } from '@angular/material/dialog';
 
@@ -80,12 +80,24 @@ export class FirebaseService implements OnDestroy {
   readonly panToSubject = new Subject<Pos>();
   readonly drawerOpenSubject = new BehaviorSubject<boolean>(false);
 
+  categories = ['Hike', 'Food', 'Accommodation'];
+  icons = [
+    { label: iconLabelMap['favorite'], icon: 'favorite', color: iconColorMap['favorite'] },
+    {
+      label: iconLabelMap['check_circle'],
+      icon: 'check_circle',
+      color: iconColorMap['check_circle'],
+    },
+    { label: iconLabelMap['thumb_down'], icon: 'thumb_down', color: iconColorMap['thumb_down'] },
+  ];
+
   selectedSpotId?: string;
   markers: Marker[] = [];
 
   filteredMarkers: Marker[] = [];
   filterText = '';
   filterCategory = new Set<string>();
+  filterIcon = new Set<string>();
 
   constructor(private readonly matDialog: MatDialog) {
     onAuthStateChanged(auth, (user) => {
@@ -363,6 +375,15 @@ export class FirebaseService implements OnDestroy {
     this.filterMarkers();
   }
 
+  updateFilterIcon(icon: string, checked: boolean) {
+    if (checked) {
+      this.filterIcon.add(icon);
+    } else {
+      this.filterIcon.delete(icon);
+    }
+    this.filterMarkers();
+  }
+
   filterMarkers() {
     // Search input box.
     if (!this.filterText) {
@@ -392,10 +413,30 @@ export class FirebaseService implements OnDestroy {
       }
       this.filteredMarkers = tempFilteredMarkers;
     }
+
+    // Icon.
+    if (this.filterIcon.size) {
+      // If didn't select any icons, means doesn't apply any filter
+      let tempFilteredMarkers: Marker[] = [];
+      for (const icon of this.filterIcon) {
+        for (let i = 0; i < this.filteredMarkers.length; ++i) {
+          if (this.filteredMarkers[i].spot.icon === icon) {
+            tempFilteredMarkers.push(this.filteredMarkers[i]);
+          }
+        }
+      }
+      this.filteredMarkers = tempFilteredMarkers;
+    }
   }
 
   clearFilter() {
+    this.filterText = '';
     this.filterCategory.clear();
+    this.filterIcon.clear();
     this.filterMarkers();
+  }
+
+  hasFilter(): boolean {
+    return !!this.filterText || !!this.filterCategory.size || !!this.filterIcon.size;
   }
 }

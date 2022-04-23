@@ -50,15 +50,28 @@
       </ng-template>
     </div>
 
-    <div *ngIf="firebaseService.currentUser" class="top-left-buttons">
+    <div
+      *ngIf="firebaseService.currentUser && !firebaseService.drawerOpenSubject.value"
+      class="top-left-buttons"
+    >
       <button
         mat-fab
         color="accent"
         matTooltip="Search and filter spots"
-        matTooltipPosition="right"
-        (click)="drawer.toggle()"
+        matTooltipPosition="below"
+        (click)="firebaseService.drawerOpenSubject.next(true)"
       >
         <mat-icon>manage_search</mat-icon>
+      </button>
+      <button
+        *ngIf="firebaseService.hasFilter()"
+        mat-fab
+        color="accent"
+        matTooltip="Clear filter"
+        matTooltipPosition="below"
+        (click)="firebaseService.clearFilter()"
+      >
+        <mat-icon>filter_list_off</mat-icon>
       </button>
     </div>
 

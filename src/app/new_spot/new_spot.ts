@@ -5,7 +5,7 @@ import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 
 import { FirebaseService, SpotDB, SpotImage } from '../services/firebase_service';
-import { iconColorMap, iconLabelMap, loadingColorMap } from '../services/marker_icon';
+import { loadingColorMap } from '../services/marker_icon';
 import { resizeImg } from '../image_processing';
 import { ConfirmDialog } from '../confirm_dialog/confirm_dialog';
 import { NewSpotDialogComponent } from '../new_spot_dialog/new_spot_dialog';
@@ -35,17 +35,8 @@ export class NewSpotComponent implements OnInit {
   editAddress = false;
 
   selectedCategory?: string;
-  categories = ['Hike', 'Food', 'Accommodation'];
   selectedIcon?: string;
-  icons = [
-    { label: iconLabelMap['favorite'], icon: 'favorite', color: iconColorMap['favorite'] },
-    {
-      label: iconLabelMap['check_circle'],
-      icon: 'check_circle',
-      color: iconColorMap['check_circle'],
-    },
-    { label: iconLabelMap['thumb_down'], icon: 'thumb_down', color: iconColorMap['thumb_down'] },
-  ];
+
   tags: Set<string> = new Set<string>();
   tagValue = '';
   tagOptions = [
@@ -73,10 +64,10 @@ export class NewSpotComponent implements OnInit {
 
   constructor(
     private readonly domSanitizer: DomSanitizer,
-    private readonly firebaseService: FirebaseService,
     private readonly matDialogRef: MatDialogRef<NewSpotDialogComponent>,
     private readonly matSnackBar: MatSnackBar,
-    private readonly matDialog: MatDialog
+    private readonly matDialog: MatDialog,
+    readonly firebaseService: FirebaseService
   ) {
     this.filterTags();
   }

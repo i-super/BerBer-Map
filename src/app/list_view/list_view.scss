@@ -1,5 +1,5 @@
 .list-wrapper {
-  width: 400px;
+  width: 420px;
   padding: 20px;
 }
 
@@ -87,17 +87,18 @@ mat-form-field {
   color: #2e4c6d;
 }
 
-.filter-items {
+.filter-section {
   display: flex;
   align-items: center;
 }
 
 .filter-title {
+  flex-shrink: 0;
   width: 75px;
   font-size: 16px;
 }
 
-.category-items {
+.filter-items {
   display: flex;
   align-items: center;
 }
@@ -108,6 +109,23 @@ mat-checkbox {
 
 mat-divider {
   margin: 16px 0;
+}
+
+.icons-wrapper {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.icon-wrapper {
+  display: flex;
+  mat-icon {
+    margin-left: 3px;
+    $size: 16px;
+    font-size: $size;
+    width: $size;
+    height: $size;
+    line-height: 24px;
+  }
 }
 
 .bottom-row {

@@ -1,5 +1,4 @@
 import { Component, ElementRef, OnDestroy, ViewChild } from '@angular/core';
-import { MatCheckboxChange } from '@angular/material/checkbox';
 import { ReplaySubject, takeUntil } from 'rxjs';
 import { FirebaseService, Marker } from '../services/firebase_service';
 import { iconColorMap } from '../services/marker_icon';
