@@ -75,30 +75,33 @@
     </div>
   </div>
 
-  <div>
-    <div
-      *ngFor="let marker of firebaseService.filteredMarkers; let i = index;"
-      class="spot-wrapper"
-      [class.selected]="firebaseService.selectedSpotId === marker.spotId"
-      (click)="openSpotInfo(marker)"
-    >
-      <div class="spot-name">{{marker.spot.name}}</div>
-      <div class="detail">
-        <div class="category-and-tag-wrapper">
-          <div class="category">{{marker.spot.category}}</div>
-          <mat-icon [ngStyle]="{color: iconColorMap[marker.spot.icon]}">
-            {{marker.spot.icon}}
-          </mat-icon>
-        </div>
-        <div class="images">
-          <img *ngIf="marker.spot.images.length > 0" [src]="marker.spot.images[0].url" />
-        </div>
+  <div class="total-spots">
+    <div>
+      {{firebaseService.filteredMarkers.length + '/' + firebaseService.markers.length + ' spots'}}
+    </div>
+  </div>
+  <div
+    *ngFor="let marker of firebaseService.filteredMarkers; let i = index;"
+    class="spot-wrapper"
+    [class.selected]="firebaseService.selectedSpotId === marker.spotId"
+    (click)="openSpotInfo(marker)"
+  >
+    <div class="spot-name">{{marker.spot.name}}</div>
+    <div class="detail">
+      <div class="category-and-tag-wrapper">
+        <div class="category">{{marker.spot.category}}</div>
+        <mat-icon [ngStyle]="{color: iconColorMap[marker.spot.icon]}">
+          {{marker.spot.icon}}
+        </mat-icon>
       </div>
+      <div class="images">
+        <img *ngIf="marker.spot.images.length > 0" [src]="marker.spot.images[0].url" />
+      </div>
+    </div>
 
-      <div class="tag-row">
-        <div *ngFor="let tag of marker.spot.tags" class="tag-wrapper">
-          <div class="tag-content">{{tag}}</div>
-        </div>
+    <div class="tag-row">
+      <div *ngFor="let tag of marker.spot.tags" class="tag-wrapper">
+        <div class="tag-content">{{tag}}</div>
       </div>
     </div>
   </div>
