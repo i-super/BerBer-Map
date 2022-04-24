@@ -4,16 +4,24 @@
       <div class="auth-inputs">
         <mat-form-field class="no-padding input-outline-primary" appearance="outline">
           <mat-label>email</mat-label>
-          <input matInput type="email" required [(ngModel)]="email" />
+          <input
+            matInput
+            type="email"
+            required
+            [(ngModel)]="email"
+            (keydown.enter)="password ? onSubmit() : loginPasswordRef.focus()"
+          />
         </mat-form-field>
         <mat-form-field class="no-padding input-outline-primary" appearance="outline">
           <mat-label>password</mat-label>
           <input
+            #loginPasswordRef
             matInput
             type="password"
             autocomplete="current-password"
             required
             [(ngModel)]="password"
+            (keydown.enter)="password ? onSubmit() : undefined"
           />
         </mat-form-field>
         <div class="forgot-password">
@@ -25,16 +33,24 @@
       <div class="auth-inputs">
         <mat-form-field class="no-padding input-outline-primary" appearance="outline">
           <mat-label>email</mat-label>
-          <input matInput type="email" required [(ngModel)]="email" />
+          <input
+            matInput
+            type="email"
+            required
+            [(ngModel)]="email"
+            (keydown.enter)="password ? onSubmit() : signupPasswordRef.focus()"
+          />
         </mat-form-field>
         <mat-form-field class="no-padding input-outline-primary" appearance="outline">
           <mat-label>password</mat-label>
           <input
+            #signupPasswordRef
             matInput
             type="password"
             autocomplete="new-password"
             required
             [(ngModel)]="password"
+            (keydown.enter)="password ? onSubmit() : undefined"
           />
         </mat-form-field>
       </div>
