@@ -31,7 +31,7 @@ export class MapComponent implements AfterViewInit, OnDestroy {
   private readonly destroyed = new ReplaySubject<void>(1);
 
   constructor(readonly firebaseService: FirebaseService) {
-    this.firebaseService.authReady.pipe(takeUntil(this.destroyed)).subscribe(() => {
+    this.firebaseService.authStateChanged.pipe(takeUntil(this.destroyed)).subscribe(() => {
       this.firebaseService.fetchSpots();
     });
     this.firebaseService.panToSubject.pipe(takeUntil(this.destroyed)).subscribe((pos) => {

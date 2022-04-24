@@ -76,7 +76,7 @@ export class FirebaseService implements OnDestroy {
   // https://firebase.google.com/docs/reference/js/firebase.User
   currentUser: User | null = null;
 
-  readonly authReady = new Subject<void>();
+  readonly authStateChanged = new Subject<void>();
   readonly panToSubject = new Subject<Pos>();
   readonly drawerOpenSubject = new BehaviorSubject<boolean>(false);
 
@@ -91,26 +91,37 @@ export class FirebaseService implements OnDestroy {
     { label: iconLabelMap['thumb_down'], icon: 'thumb_down', color: iconColorMap['thumb_down'] },
   ];
 
+  // The currently selected marker. Selected marker will show a larger icon.
   selectedSpotId?: string;
+  // List of markers we get from firebase. This is all the markers, without filter.
   markers: Marker[] = [];
+  // All the tags computed from `this.markers`.
+  allTags = new Set<string>();
 
+  // Filtered results.
   filteredMarkers: Marker[] = [];
   filterText = '';
   filterCategory = new Set<string>();
   filterIcon = new Set<string>();
   filterTag = new Set<string>();
 
-  allTags = new Set<string>();
-
   constructor(private readonly matDialog: MatDialog) {
     onAuthStateChanged(auth, (user) => {
       this.currentUser = user;
-      this.authReady.next();
+      this.authStateChanged.next();
+      // Clear states when logged out.
+      if (!user) {
+        this.drawerOpenSubject.next(false);
+        this.selectedSpotId = undefined;
+        this.allTags.clear();
+        this.markers = [];
+        this.clearFilter();
+      }
     });
   }
 
   ngOnDestroy() {
-    this.authReady.complete();
+    this.authStateChanged.complete();
     this.panToSubject.complete();
   }
 
