@@ -137,6 +137,8 @@ export class FirebaseService implements OnDestroy {
         this.allTags.add(tag);
       }
     });
+    // Sort tags alphabetically.
+    this.allTags = new Set([...this.allTags].sort());
     this.filterMarkers();
   }
 
@@ -400,77 +402,35 @@ export class FirebaseService implements OnDestroy {
   }
 
   filterMarkers() {
-    // Search input box.
-    if (!this.filterText) {
+    if (!this.hasFilter()) {
       this.filteredMarkers = this.markers;
-    } else {
-      this.filteredMarkers = [];
-      const str = this.filterText.toLowerCase();
-      for (let i = 0; i < this.markers.length; ++i) {
-        // ber
-        if (this.markers[i].spot.name.toLowerCase().includes(str)) {
-          this.filteredMarkers.push(this.markers[i]);
-        }
-      }
+      return;
     }
-
-    // Filter panel.
-    // Category.
-    if (this.filterCategory.size) {
-      // If didn't select any categories, means doesn't apply any filter
-      let tempFilteredMarkers: Marker[] = [];
-      for (const category of this.filterCategory) {
-        for (let i = 0; i < this.filteredMarkers.length; ++i) {
-          if (this.filteredMarkers[i].spot.category === category) {
-            tempFilteredMarkers.push(this.filteredMarkers[i]);
-          }
-        }
-      }
-      this.filteredMarkers = tempFilteredMarkers;
-    }
-
-    // Icon.
-    if (this.filterIcon.size) {
-      // If didn't select any icons, means doesn't apply any filter
-      let tempFilteredMarkers: Marker[] = [];
-      for (const icon of this.filterIcon) {
-        for (let i = 0; i < this.filteredMarkers.length; ++i) {
-          if (this.filteredMarkers[i].spot.icon === icon) {
-            tempFilteredMarkers.push(this.filteredMarkers[i]);
-          }
-        }
-      }
-      this.filteredMarkers = tempFilteredMarkers;
-    }
-
-    // Tag.
-    if (this.filterTag.size) {
-      // If didn't select any tags, means doesn't apply any filter
-      let tempFilteredMarkers: Marker[] = [];
-      let tempSet = new Set<Marker>();
-      for (const tag of this.filterTag) {
-        for (let i = 0; i < this.filteredMarkers.length; ++i) {
-          for (let k = 0; k < this.filteredMarkers[i].spot.tags.length; ++k)
-            if (this.filteredMarkers[i].spot.tags[k] === tag) {
-              if (!tempSet.has(this.filteredMarkers[i])) {
-                tempSet.add(this.filteredMarkers[i]);
-                tempFilteredMarkers.push(this.filteredMarkers[i]);
-              }
-            }
-        }
-      }
-      this.filteredMarkers = tempFilteredMarkers;
-    }
+    const tagSetToArray = [...this.filterTag];
+    const keyword = this.filterText.toLowerCase();
+    this.filteredMarkers = this.markers.filter(
+      (marker) =>
+        (!this.filterText || marker.spot.name.toLowerCase().includes(keyword)) &&
+        (this.filterCategory.size === 0 || this.filterCategory.has(marker.spot.category)) &&
+        (this.filterIcon.size === 0 || this.filterIcon.has(marker.spot.icon)) &&
+        (this.filterTag.size === 0 || tagSetToArray.every((tag) => marker.spot.tags.includes(tag)))
+    );
   }
 
   clearFilter() {
     this.filterText = '';
     this.filterCategory.clear();
     this.filterIcon.clear();
+    this.filterTag.clear();
     this.filterMarkers();
   }
 
   hasFilter(): boolean {
-    return !!this.filterText || !!this.filterCategory.size || !!this.filterIcon.size;
+    return (
+      !!this.filterText ||
+      !!this.filterCategory.size ||
+      !!this.filterIcon.size ||
+      !!this.filterTag.size
+    );
   }
 }

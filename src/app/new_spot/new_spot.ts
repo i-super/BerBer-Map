@@ -39,18 +39,6 @@ export class NewSpotComponent implements OnInit {
 
   tags: Set<string> = new Set<string>();
   tagValue = '';
-  tagOptions = [
-    'shade',
-    'easy',
-    'moderate',
-    'difficult',
-    'landscape',
-    'toilet',
-    'picnic',
-    'shower',
-    'fire pit',
-    'parking diffcult',
-  ];
   filteredTagOptions: string[] = [];
   notes = '';
   // Selecting a new file will populate only previewURL and file (storedImage will be undefined);
@@ -142,7 +130,7 @@ export class NewSpotComponent implements OnInit {
   filterTags() {
     const keyword = this.tagValue.trim().toLowerCase();
     const removeDupOpt = [];
-    for (const tag of this.tagOptions) {
+    for (const tag of this.firebaseService.allTags) {
       if (!this.tags.has(tag)) {
         removeDupOpt.push(tag);
       }
@@ -150,10 +138,6 @@ export class NewSpotComponent implements OnInit {
     if (!keyword) {
       this.filteredTagOptions = removeDupOpt;
     } else {
-      // this.filteredTagOptions = [
-      //   this.tagValue,
-      //   ...this.tagOptions.filter((tag) => tag.toLowerCase().includes(keyword)),
-      // ];
       let hasTagValue = false;
       this.filteredTagOptions = [];
       for (const tag of removeDupOpt) {
