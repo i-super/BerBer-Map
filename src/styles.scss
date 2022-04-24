@@ -116,11 +116,18 @@ $berbermap-theme: mat.define-light-theme(
 
 html {
   height: 100%;
+  box-sizing: border-box;
 }
 body {
   height: 100%;
   margin: 0;
   font-family: Roboto, 'Helvetica Neue', sans-serif;
+}
+
+*,
+*:before,
+*:after {
+  box-sizing: inherit;
 }
 
 .mat-icon-button.mat-icon-button,
@@ -137,7 +144,7 @@ body {
 
 .dialog-wrapper {
   position: relative;
-  max-width: 1000px;
+  max-width: 1080px;
   background: #f5f5f5;
   padding: 60px 32px;
   overflow: auto;

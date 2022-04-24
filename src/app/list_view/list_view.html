@@ -39,21 +39,23 @@
   <div *ngIf="isFilterCardOpen" class="filter-detail-wrapper" [@expandY]>
     <div class="filter-section">
       <div class="filter-title">Category :</div>
-      <div *ngFor="let category of firebaseService.categories" class="filter-items">
-        <mat-checkbox
-          [checked]="firebaseService.filterCategory.has(category)"
-          (change)="firebaseService.updateFilterCategory(category, $event.checked)"
-        >
-          {{category}}
-        </mat-checkbox>
+      <div class="filter-items">
+        <div *ngFor="let category of firebaseService.categories" class="filter-item">
+          <mat-checkbox
+            [checked]="firebaseService.filterCategory.has(category)"
+            (change)="firebaseService.updateFilterCategory(category, $event.checked)"
+          >
+            {{category}}
+          </mat-checkbox>
+        </div>
       </div>
     </div>
     <mat-divider></mat-divider>
 
     <div class="filter-section">
       <div class="filter-title">Mark :</div>
-      <div class="icons-wrapper">
-        <div *ngFor="let icon of firebaseService.icons" class="filter-items">
+      <div class="filter-items">
+        <div *ngFor="let icon of firebaseService.icons" class="filter-item">
           <mat-checkbox
             [checked]="firebaseService.filterIcon.has(icon.icon)"
             (change)="firebaseService.updateFilterIcon(icon.icon, $event.checked)"
