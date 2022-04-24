@@ -6,7 +6,6 @@ import { iconColorMap } from '../services/marker_icon';
 
 const heightAutoStyle = {
   height: '*',
-  overflow: 'hidden',
   marginTop: '*',
   marginBottom: '*',
   paddingTop: '*',
@@ -15,7 +14,6 @@ const heightAutoStyle = {
 
 const heightZeroStyle = {
   height: 0,
-  overflow: 'hidden',
   marginTop: 0,
   marginBottom: 0,
   paddingTop: 0,
