@@ -127,6 +127,7 @@ export class FirebaseService implements OnDestroy {
 
   async fetchSpots() {
     this.markers = [];
+    this.allTags.clear();
     if (!this.currentUser) {
       return;
     }

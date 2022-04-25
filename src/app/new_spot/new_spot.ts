@@ -168,7 +168,7 @@ export class NewSpotComponent implements OnInit {
     const files = (e.target as HTMLInputElement).files;
     if (!files) return;
     for (let i = 0; i < files.length; ++i) {
-      resizeImg(files[i], 'image.png', 800, 800)
+      resizeImg(files[i], 'image.png', 2000, 2000)
         .then(({ file }) => {
           this.uploadImages.push({
             file,
