@@ -128,11 +128,11 @@ describe('Firebase secuirty rules', () => {
       await assertFails(
         uploadBytes(ref(storage, `/users/${myId}/spots/xyz/456.png`), new Uint8Array())
       );
-      // Writes a 6MB image.
+      // Writes a 11MB image.
       await assertFails(
         uploadBytes(
           ref(storage, `/users/${myId}/spots/xyz/456.png`),
-          new Uint8Array(6 * 1024 * 1024),
+          new Uint8Array(11 * 1024 * 1024),
           {
             contentType: 'image/png',
           }
