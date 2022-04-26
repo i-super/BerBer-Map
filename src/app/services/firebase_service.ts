@@ -261,7 +261,7 @@ export class FirebaseService implements OnDestroy {
         imageId = `${Math.floor(Math.random() * 10000000)}`;
       }
       // Upload images to storage at /users/<uid>/spots/<spotId>/<imageId>.png
-      const storagePath = `/users/${uid}/spots/${placeId}/${imageId}.png`;
+      const storagePath = `/users/${uid}/spots/${spotId}/${imageId}.png`;
       const storageRef = ref(storage, storagePath);
       const promise = uploadBytes(storageRef, image.file)
         .then((uploadResult) => getDownloadURL(uploadResult.ref))
