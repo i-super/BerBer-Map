@@ -1,10 +1,15 @@
+import { TestBed } from '@angular/core/testing';
+import { MatDialogModule } from '@angular/material/dialog';
 import { FirebaseService } from './firebase_service';
 
 describe('FirebaseService', () => {
   let firebaseService: FirebaseService;
 
   beforeEach(async () => {
-    firebaseService = new FirebaseService();
+    TestBed.configureTestingModule({
+      imports: [MatDialogModule],
+    });
+    firebaseService = TestBed.inject(FirebaseService);
   });
 
   it('dummy test', () => {
