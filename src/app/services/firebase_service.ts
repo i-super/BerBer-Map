@@ -80,7 +80,7 @@ export class FirebaseService implements OnDestroy {
   readonly panToSubject = new Subject<Pos>();
   readonly drawerOpenSubject = new BehaviorSubject<boolean>(false);
 
-  categories = ['Hike', 'Food', 'Accommodation'];
+  categories = ['Hike', 'Food', 'Accommodation', 'Spot'];
   icons = [
     { label: iconLabelMap['favorite'], icon: 'favorite', color: iconColorMap['favorite'] },
     {

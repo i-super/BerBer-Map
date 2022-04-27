@@ -203,13 +203,25 @@ mat-divider {
   }
 }
 
-.total-spots {
+.list-info {
   display: flex;
   align-items: center;
   justify-content: flex-end;
   margin: 10px 0 5px;
-  padding-right: 5px;
+  padding: 0 5px;
   color: #2e4c6d;
+
+  .clear-filter {
+    margin: 0 auto 0 4px;
+    color: #396fb0;
+    text-decoration-line: underline;
+    transition: color 0.3s;
+
+    &:hover {
+      cursor: pointer;
+      color: #2e4c6d;
+    }
+  }
 }
 
 .spot-wrapper {

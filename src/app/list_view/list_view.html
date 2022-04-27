@@ -100,8 +100,15 @@
     </div>
   </div>
 
-  <div class="total-spots">
-    <div>
+  <div class="list-info">
+    <div
+      *ngIf="firebaseService.hasFilter() && !this.isFilterCardOpen"
+      class="clear-filter"
+      (click)="firebaseService.clearFilter()"
+    >
+      Clear filter
+    </div>
+    <div class="total-spots">
       {{firebaseService.filteredMarkers.length + '/' + firebaseService.markers.length + ' spots'}}
     </div>
   </div>

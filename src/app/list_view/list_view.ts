@@ -82,9 +82,5 @@ export class ListViewComponent implements OnDestroy {
 
   openFilterCard() {
     this.isFilterCardOpen = !this.isFilterCardOpen;
-    // if (this.isFilterCardOpen) {
-    //   this.filterText = '';
-    //   this.filterMarkers();
-    // }
   }
 }
