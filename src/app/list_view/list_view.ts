@@ -48,7 +48,7 @@ export class ListViewComponent implements OnDestroy {
   private readonly destroyed = new ReplaySubject<void>(1);
 
   constructor(readonly firebaseService: FirebaseService) {
-    this.firebaseService.drawerOpenSubject
+    this.firebaseService.drawerOpenObservable
       .pipe(takeUntil(this.destroyed))
       .subscribe((isOpen: boolean) => {
         if (isOpen) {
@@ -68,19 +68,19 @@ export class ListViewComponent implements OnDestroy {
     }, 0);
   }
 
-  drawerOpen() {
-    this.firebaseService.drawerOpenSubject.next(false);
-  }
-
   openSpotInfo(marker: Marker) {
-    if (this.firebaseService.selectedSpotId === marker.spotId) {
+    if (this.firebaseService.isSpotSelected(marker.spotId)) {
       this.firebaseService.openSpotInfoDialog(marker);
     }
-    this.firebaseService.selectedSpotId = marker.spotId;
+    this.firebaseService.selectSpot(marker.spotId);
     this.firebaseService.panTo({ lat: marker.position.lat, lng: marker.position.lng });
   }
 
   openFilterCard() {
     this.isFilterCardOpen = !this.isFilterCardOpen;
+  }
+
+  trackByMarker(index: number, marker: Marker) {
+    return marker.spotId;
   }
 }

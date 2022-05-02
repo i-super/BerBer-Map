@@ -3,7 +3,7 @@
     #drawer
     class="drawer-content"
     mode="side"
-    (openedChange)="drawerOpenedChange($event)"
+    (openedChange)="firebaseService.setDrawerOpen($event)"
   >
     <list-view></list-view>
   </mat-drawer>
@@ -52,12 +52,12 @@
 
     <div *ngIf="firebaseService.currentUser" class="top-left-buttons">
       <button
-        *ngIf="!firebaseService.drawerOpenSubject.value"
+        *ngIf="!firebaseService.isDrawerOpen()"
         mat-fab
         color="accent"
         matTooltip="Search and filter spots"
         matTooltipPosition="below"
-        (click)="firebaseService.drawerOpenSubject.next(true)"
+        (click)="firebaseService.setDrawerOpen(true)"
         [@fadeAnimation]
       >
         <mat-icon>manage_search</mat-icon>

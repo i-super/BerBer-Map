@@ -16,9 +16,9 @@
     [options]="myLocationMarkerOptions"
   ></map-marker>
   <map-marker
-    *ngFor="let marker of firebaseService.filteredMarkers"
+    *ngFor="let marker of firebaseService.filteredMarkers; trackBy: trackByMarker"
     [position]="marker.position"
-    [options]="getMarkerOption(marker)"
+    [options]="marker.options"
     [clickable]="true"
     (mapClick)="$event.domEvent.stopPropagation(); onMarkerClick(marker)"
   ></map-marker>

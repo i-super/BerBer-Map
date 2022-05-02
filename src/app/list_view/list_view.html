@@ -6,7 +6,7 @@
       color="accent"
       matTooltip="Close search and filter spots"
       matTooltipPosition="right"
-      (click)="drawerOpen()"
+      (click)="firebaseService.setDrawerOpen(false)"
     >
       <mat-icon>arrow_back</mat-icon>
     </button>
@@ -113,9 +113,9 @@
     </div>
   </div>
   <div
-    *ngFor="let marker of firebaseService.filteredMarkers; let i = index;"
+    *ngFor="let marker of firebaseService.filteredMarkers; let i = index; trackBy: trackByMarker"
     class="spot-wrapper"
-    [class.selected]="firebaseService.selectedSpotId === marker.spotId"
+    [class.selected]="firebaseService.isSpotSelected(marker.spotId)"
     (click)="openSpotInfo(marker)"
   >
     <div class="spot-name">{{marker.spot.name}}</div>

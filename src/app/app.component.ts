@@ -34,13 +34,15 @@ export class AppComponent implements AfterViewInit, OnDestroy {
   constructor(readonly firebaseService: FirebaseService, private readonly matDialog: MatDialog) {}
 
   ngAfterViewInit() {
-    this.firebaseService.drawerOpenSubject.pipe(takeUntil(this.destroyed)).subscribe((isOpen) => {
-      if (isOpen) {
-        this.drawer.open();
-      } else {
-        this.drawer.close();
-      }
-    });
+    this.firebaseService.drawerOpenObservable
+      .pipe(takeUntil(this.destroyed))
+      .subscribe((isOpen) => {
+        if (isOpen) {
+          this.drawer.open();
+        } else {
+          this.drawer.close();
+        }
+      });
   }
 
   ngOnDestroy() {
@@ -61,9 +63,5 @@ export class AppComponent implements AfterViewInit, OnDestroy {
       maxHeight: '100vh',
       maxWidth: '100vw',
     });
-  }
-
-  drawerOpenedChange(isOpen: boolean) {
-    this.firebaseService.drawerOpenSubject.next(isOpen);
   }
 }

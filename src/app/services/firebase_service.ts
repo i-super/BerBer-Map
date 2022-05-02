@@ -16,7 +16,7 @@ import {
 } from 'firebase/firestore';
 import { DocumentReference } from 'firebase/firestore/lite';
 import { deleteObject, getDownloadURL, getStorage, ref, uploadBytes } from 'firebase/storage';
-import { BehaviorSubject, Subject } from 'rxjs';
+import { BehaviorSubject, Observable, Subject } from 'rxjs';
 
 import { auth, db } from '../firebase';
 import { iconColorMap, iconLabelMap } from './marker_icon';
@@ -61,7 +61,7 @@ interface TagDB {
 
 export interface Marker {
   position: google.maps.LatLngLiteral;
-  color: string;
+  options: google.maps.MarkerOptions;
   spotId: string;
   spot: SpotDB;
 }
@@ -71,6 +71,23 @@ export interface Pos {
   lng: number;
 }
 
+function makeMarkerOption(icon: string, markSelected: boolean): google.maps.MarkerOptions {
+  return {
+    draggable: false,
+    icon: {
+      // https://developers.google.com/maps/documentation/javascript/reference/marker#MarkerLabel
+      path: 'M12,11.5A2.5,2.5 0 0,1 9.5,9A2.5,2.5 0 0,1 12,6.5A2.5,2.5 0 0,1 14.5,9A2.5,2.5 0 0,1 12,11.5M12,2A7,7 0 0,0 5,9C5,14.25 12,22 12,22C12,22 19,14.25 19,9A7,7 0 0,0 12,2Z',
+      anchor: new google.maps.Point(12, 17),
+      fillOpacity: 1,
+      fillColor: iconColorMap[icon],
+      strokeWeight: 2,
+      strokeColor: markSelected ? '#daddfc' : 'white',
+      scale: markSelected ? 2.7 : 2,
+      labelOrigin: new google.maps.Point(12, 15),
+    },
+  };
+}
+
 @Injectable({ providedIn: 'root' })
 export class FirebaseService implements OnDestroy {
   // https://firebase.google.com/docs/reference/js/firebase.User
@@ -78,7 +95,8 @@ export class FirebaseService implements OnDestroy {
 
   readonly authStateChanged = new Subject<void>();
   readonly panToSubject = new Subject<Pos>();
-  readonly drawerOpenSubject = new BehaviorSubject<boolean>(false);
+  private readonly drawerOpenSubject = new BehaviorSubject<boolean>(false);
+  readonly drawerOpenObservable: Observable<boolean> = this.drawerOpenSubject;
 
   categories = ['Hike', 'Food', 'Accommodation', 'Spot'];
   icons = [
@@ -92,7 +110,7 @@ export class FirebaseService implements OnDestroy {
   ];
 
   // The currently selected marker. Selected marker will show a larger icon.
-  selectedSpotId?: string;
+  private selectedSpotId?: string;
   // List of markers we get from firebase. This is all the markers, without filter.
   markers: Marker[] = [];
   // All the tags computed from `this.markers`.
@@ -111,8 +129,8 @@ export class FirebaseService implements OnDestroy {
       this.authStateChanged.next();
       // Clear states when logged out.
       if (!user) {
-        this.drawerOpenSubject.next(false);
-        this.selectedSpotId = undefined;
+        this.setDrawerOpen(false);
+        this.selectSpot(undefined);
         this.allTags.clear();
         this.markers = [];
         this.clearFilter();
@@ -141,7 +159,7 @@ export class FirebaseService implements OnDestroy {
       const spot = doc.data();
       this.markers.push({
         position: { lat: spot.lat, lng: spot.lng },
-        color: iconColorMap[spot.icon],
+        options: makeMarkerOption(spot.icon, this.isSpotSelected(doc.id)),
         spotId: doc.id,
         spot,
       });
@@ -379,7 +397,34 @@ export class FirebaseService implements OnDestroy {
       data: marker,
       autoFocus: false,
     });
-    this.selectedSpotId = marker.spotId;
+    this.selectSpot(marker.spotId);
+  }
+
+  isDrawerOpen(): boolean {
+    return this.drawerOpenSubject.value;
+  }
+
+  setDrawerOpen(isOpen: boolean) {
+    if (isOpen === this.drawerOpenSubject.value) return;
+    this.drawerOpenSubject.next(isOpen);
+  }
+
+  isSpotSelected(spotId: string): boolean {
+    return spotId === this.selectedSpotId;
+  }
+
+  selectSpot(spotId?: string): void {
+    if (this.selectedSpotId === spotId) return;
+    for (const marker of this.markers) {
+      if (marker.spotId === this.selectedSpotId) {
+        // Unselect the old one.
+        marker.options = makeMarkerOption(marker.spot.icon, false);
+      } else if (marker.spotId === spotId) {
+        // Select the new one.
+        marker.options = makeMarkerOption(marker.spot.icon, true);
+      }
+    }
+    this.selectedSpotId = spotId;
   }
 
   panTo(pos: Pos) {
