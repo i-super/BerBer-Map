@@ -237,12 +237,12 @@ export class NewSpotComponent implements OnInit {
         })),
       })
       .then(async () => {
-        this.matDialogRef.close();
-        this.loading = false;
         await this.firebaseService.fetchSpots();
         const spotMarker = this.firebaseService.markers.find(
           (marker) => marker.spot.placeId === this.selectedPlaceId
         );
+        this.matDialogRef.close();
+        this.loading = false;
         if (spotMarker) {
           this.firebaseService.openSpotInfoDialog(spotMarker);
           const pos = {
