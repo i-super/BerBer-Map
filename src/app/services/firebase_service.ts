@@ -281,7 +281,9 @@ export class FirebaseService implements OnDestroy {
       // Upload images to storage at /users/<uid>/spots/<spotId>/<imageId>.png
       const storagePath = `/users/${uid}/spots/${spotId}/${imageId}.png`;
       const storageRef = ref(storage, storagePath);
-      const promise = uploadBytes(storageRef, image.file)
+      const promise = uploadBytes(storageRef, image.file, {
+        cacheControl: 'public,max-age=315360000', // 10 Years.
+      })
         .then((uploadResult) => getDownloadURL(uploadResult.ref))
         .then((url) => {
           // After done uploading, update the images array with the storedImage.
