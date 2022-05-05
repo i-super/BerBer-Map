@@ -1,5 +1,6 @@
 import { initializeApp, cert } from 'firebase-admin/app';
 import { getFirestore } from 'firebase-admin/firestore';
+import { getStorage } from 'firebase-admin/storage';
 import { execSync } from 'child_process';
 import { createRequire } from 'module'; // Bring in the ability to create the 'require' method
 import { fileURLToPath } from 'url';
@@ -9,55 +10,61 @@ const __dirname = dirname(__filename);
 const require = createRequire(import.meta.url); // construct the require method
 const serviceAccount = require('./berbermap-firebase-adminsdk.json');
 
-// https://stackoverflow.com/a/62718371/12017013
-// First dump the whole Firestore into a json as a backup (gitignored).
-execSync(
-  `../node_modules/.bin/firestore-export --accountCredentials ./berbermap-firebase-adminsdk.json --backupFile ./firestore-backup-${new Date().toISOString()}.json`,
-  {
-    cwd: __dirname,
-    stdio: 'inherit', // Still print to console.
-  }
-);
+function backupFirestoreToJson() {
+  // https://stackoverflow.com/a/62718371/12017013
+  // First dump the whole Firestore into a json as a backup (gitignored).
+  execSync(
+    `../node_modules/.bin/firestore-export --accountCredentials ./berbermap-firebase-adminsdk.json --backupFile ./firestore-backup-${new Date().toISOString()}.json`,
+    {
+      cwd: __dirname,
+      stdio: 'inherit', // Still print to console.
+    }
+  );
+}
+backupFirestoreToJson();
 
 const app = initializeApp({
   credential: cert(serviceAccount),
 });
 
 const db = getFirestore(app);
+const storage = getStorage(app).bucket('gs://berbermap.appspot.com');
 
-const collections = await db.listCollections();
-if (collections.length !== 1 && collections[0].id !== 'users') {
-  console.warn('There should be only 1 root collection but found many:');
-  for (const collection of collections) {
-    console.warn(collection.id);
+// const collections = await db.listCollections();
+// if (collections.length !== 1 && collections[0].id !== 'users') {
+//   console.warn('There should be only 1 root collection but found many:');
+//   for (const collection of collections) {
+//     console.warn(collection.id);
+//   }
+// } else {
+//   console.info('✅ root collection OK');
+// }
+
+async function checkUsers() {
+  const users = await db.collection('users').listDocuments();
+  for (const userRef of users) {
+    console.log(`checking "users/${userRef.id}`);
+
+    // users/<uid> should only contain collections, not documents.
+    const userSnapshot = await userRef.get();
+    const user = userSnapshot.data();
+    if (user) {
+      console.warn(`users/${userRef.id} should be empty, but it contains some documents:`, user);
+    }
+
+    const userCollections = await userRef.listCollections();
+    const allowedUserCollections = new Set(['spots', 'tags']);
+    const unknownUserCollections = userCollections.filter((c) => !allowedUserCollections.has(c.id));
+    if (userCollections.length !== 2 || unknownUserCollections.length) {
+      console.warn(
+        `Found unknown collection in users/${userRef.id}/`,
+        unknownUserCollections.map((c) => c.id).join(', ')
+      );
+    }
+
+    // Check Spots.
+    checkSpots(userRef);
   }
-} else {
-  console.info('✅ root collection OK');
-}
-
-const users = await db.collection('users').listDocuments();
-for (const userRef of users) {
-  console.log(`checking "users/${userRef.id}`);
-
-  // users/<uid> should only contain collections, not documents.
-  const userSnapshot = await userRef.get();
-  const user = userSnapshot.data();
-  if (user) {
-    console.warn(`users/${userRef.id} should be empty, but it contains some documents:`, user);
-  }
-
-  const userCollections = await userRef.listCollections();
-  const allowedUserCollections = new Set(['spots', 'tags']);
-  const unknownUserCollections = userCollections.filter((c) => !allowedUserCollections.has(c.id));
-  if (userCollections.length !== 2 || unknownUserCollections.length) {
-    console.warn(
-      `Found unknown collection in users/${userRef.id}/`,
-      unknownUserCollections.map((c) => c.id).join(', ')
-    );
-  }
-
-  // Check Spots.
-  checkSpots(userRef);
 }
 
 async function checkSpots(userRef) {
@@ -114,3 +121,17 @@ async function checkSpots(userRef) {
     }
   }
 }
+
+// Check if all images in storage has metadata cache-control set
+const CACHE_CONTROL = 'public,max-age=315360000'; // 10 Years.
+async function checkStorageMetadata() {
+  const [files] = await storage.getFiles();
+  console.log(`Found ${files.length} files.`);
+  for (const file of files) {
+    if (file.metadata.cacheControl !== CACHE_CONTROL) {
+      console.warn('found file with wrong cacheControl!', file.name);
+      await file.setMetadata({ cacheControl: CACHE_CONTROL });
+    }
+  }
+}
+// checkStorageMetadata();
